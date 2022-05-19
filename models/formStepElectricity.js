@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       nonRenewableAmount: DataTypes.FLOAT,
       country: DataTypes.STRING,
     },
-    {}
+    { timestamps: false }
   );
   FormStepElectricity.associate = function (models) {
     FormStepElectricity.belongsTo(models.Form, { foreignKey: "formId" });

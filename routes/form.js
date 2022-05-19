@@ -3,13 +3,13 @@ const {
   saveData,
   authenticateJWT,
   calculateEmissions,
-} = require("../utils");
+} = require("../utils/utils");
 
 module.exports = (app, models) => {
-  app.post("/api/form/add", authenticateJWT, (req, res) => {
+  app.post("/form/add", authenticateJWT, (req, res) => {
     const { userId, addData } = req.body;
 
-    const users = getData("./db/users.json");
+    const users = getData("../db/users.json");
 
     const user = users.find((u) => u.id === userId);
     if (user) {
@@ -20,14 +20,14 @@ module.exports = (app, models) => {
         user.formData[formStep] = addData.data;
       }
 
-      saveData(users, "./db/users.json");
+      saveData(users, "../db/users.json");
       res.status(200).send("Item added");
     }
   });
 
-  app.put("/api/form/update", authenticateJWT, (req, res) => {
+  app.put("/form/update", authenticateJWT, (req, res) => {
     const { userId, updateData } = req.body;
-    const users = getData("./db/users.json");
+    const users = getData("../db/users.json");
     const user = users.find((u) => u.id === userId);
     if (user) {
       formStep = updateData.step;
@@ -41,14 +41,14 @@ module.exports = (app, models) => {
         user.formData[formStep] = updateData.data;
       }
 
-      saveData(users, "./db/users.json");
+      saveData(users, "../db/users.json");
       res.status(200).send("Item updated");
     }
   });
 
-  app.delete("/api/form/delete", authenticateJWT, (req, res) => {
+  app.delete("/form/delete", authenticateJWT, (req, res) => {
     const { userId, deleteData } = req.body;
-    const users = getData("./db/users.json");
+    const users = getData("../db/users.json");
     const user = users.find((u) => u.id === userId);
     if (user) {
       formStep = deleteData.step;
@@ -64,14 +64,14 @@ module.exports = (app, models) => {
         user.formData[formStep] = formStep === "stepYear" ? 0 : "";
       }
 
-      saveData(users, "./db/users.json");
+      saveData(users, "../db/users.json");
       res.status(200).send("Item deleted");
     }
   });
 
-  app.post("/api/form/calculate", authenticateJWT, (req, res) => {
+  app.post("/form/calculate", authenticateJWT, (req, res) => {
     const { userId, formData } = req.body;
-    const users = getData("./db/users.json");
+    const users = getData("../db/users.json");
     const user = users.find((u) => u.id === userId);
     if (user) {
       const emissions = calculateEmissions(user.formData);

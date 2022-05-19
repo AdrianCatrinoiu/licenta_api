@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       emissionsAmountCH4: DataTypes.FLOAT,
       emissionsAmountN2O: DataTypes.FLOAT,
     },
-    {}
+    { timestamps: false }
   );
 
   FormStepHeating.associate = function (models) {

@@ -35,8 +35,10 @@ const sequelize = new Sequelize(
       dateStrings: true,
       typeCast: true,
       // ssl: true,
-      ssl: { ssl: true },
-      // rejectUnauthorized: false,
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
     },
     // dialectOptions: {
     //   useUTC: false, // for reading from database

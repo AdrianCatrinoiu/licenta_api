@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       value: DataTypes.FLOAT,
       emissionsAmountCO2: DataTypes.FLOAT,
     },
-    {}
+    { timestamps: false }
   );
   FormStepWaste.associate = function (models) {
     FormStepWaste.belongsTo(models.Form, { foreignKey: "formId" });

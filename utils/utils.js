@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-
+const fs = require("fs");
 module.exports = {
   generateToken: (data) => {
     return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "18000s" });
@@ -34,9 +34,9 @@ module.exports = {
   },
 
   calculateEmissions: (formData) => {
-    const GHGEmissions = getData("./db/GHGEmissions.json");
-    const electricityEmissions = getData("./db/electricityEmissions.json");
-    const wasteEmissions = getData("./db/wasteEmissions.json");
+    const GHGEmissions = getData("../db/GHGEmissions.json");
+    const electricityEmissions = getData("../db/electricityEmissions.json");
+    const wasteEmissions = getData("../db/wasteEmissions.json");
 
     let emissions = {
       electricity: { CO2: 0, CH4: 0, N2O: 0 },

@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       emissionsAmountCH4: DataTypes.FLOAT,
       emissionsAmountN2O: DataTypes.FLOAT,
     },
-    {}
+    { timestamps: false }
   );
   FormStepRefrigerants.associate = function (models) {
     FormStepRefrigerants.belongsTo(models.Form, { foreignKey: "formId" });

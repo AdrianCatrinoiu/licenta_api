@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       year: DataTypes.INTEGER,
       CAEN: DataTypes.STRING,
     },
-    {}
+    {
+      timestamps: false,
+    }
   );
   Form.associate = function (models) {
     Form.belongsTo(models.User, { foreignKey: "userId" });
