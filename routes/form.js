@@ -4,23 +4,64 @@ const {
   authenticateJWT,
   calculateEmissions,
 } = require("../utils/utils");
+const Op = require("sequelize").Op;
 
 module.exports = (app, models) => {
-  app.post("/form/add", authenticateJWT, (req, res) => {
-    const { userId, addData } = req.body;
+  app.post("/form/add", authenticateJWT, async (req, res) => {
+    const data = req.body;
+    console.log(req.user);
 
-    const users = getData("../db/users.json");
+    const user = await models.User.findByPk(req.user.uid);
 
-    const user = users.find((u) => u.id === userId);
+    console.log(user.firstName);
+    let formId = data.formId || null;
+
     if (user) {
-      formStep = addData.step;
-      if (Array.isArray(user.formData[formStep])) {
-        user.formData[formStep].push(addData.data);
-      } else {
-        user.formData[formStep] = addData.data;
-      }
+      formStep = data.step;
+      switch (formStep) {
+        case "stepYear":
+          const existingForm = await models.Form.findOne({
+            where: {
+              [Op.or]: [{ userId: user.id, year: data.data }, { id: formId }],
+            },
+          });
 
-      saveData(users, "../db/users.json");
+          if (existingForm) {
+            formId = existingForm.id;
+          } else {
+            const newForm = await models.Form.create({
+              userId: user.id,
+              year: data.data,
+              CAEN: "",
+            });
+            formId = newForm.id;
+          }
+          break;
+        case "stepCAEN":
+          user.stepCAEN = data.stepCAEN;
+
+          break;
+        case "stepElectricity":
+          user.stepElectricity = data.stepElectricity;
+          break;
+        case "stepHeating":
+          user.stepHeating = data.stepHeating;
+          break;
+        case "stepWaste":
+          user.stepWaste = data.stepWaste;
+          break;
+        case "stepRefrigerants":
+          user.stepRefrigerants = data.stepRefrigerants;
+          break;
+        case "stepTransportation":
+          user.stepTransportation = data.stepTransportation;
+          break;
+
+        default:
+          break;
+      }
+      await user.save();
+
       res.status(200).send("Item added");
     }
   });

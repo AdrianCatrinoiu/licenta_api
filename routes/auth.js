@@ -50,8 +50,7 @@ module.exports = (app, models) => {
     //append the user data
     const user = await models.User.create(newUser);
     const token = generateToken({
-      email: userData.email,
-      name: userData.lastName,
+      uid: user.id,
     });
 
     res.status(201).json({
@@ -82,9 +81,7 @@ module.exports = (app, models) => {
 
     if (isValidPassword) {
       const token = generateToken({
-        role: user.role,
-        email: user.email,
-        name: user.lastName,
+        uid: user.id,
       });
 
       res.status(200).json({
