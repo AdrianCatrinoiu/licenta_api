@@ -1,0 +1,422 @@
+[
+  {
+    "label": "Aluminum Cans",
+    "Recycled": 0.06,
+    "Landfilled": 0.02,
+    "Combusted": 0.01,
+    "Composted": null
+  },
+  {
+    "label": "Aluminum Ingot",
+    "Recycled": 0.04,
+    "Landfilled": 0.02,
+    "Combusted": 0.01,
+    "Composted": null
+  },
+  {
+    "label": "Steel Cans",
+    "Recycled": 0.32,
+    "Landfilled": 0.02,
+    "Combusted": 0.01,
+    "Composted": null
+  },
+  {
+    "label": "Cooper wire",
+    "Recycled": 0.18,
+    "Landfilled": 0.02,
+    "Combusted": 0.01,
+    "Composted": null
+  },
+  {
+    "label": "Glass",
+    "Recycled": 0.05,
+    "Landfilled": 0.02,
+    "Combusted": 0.01,
+    "Composted": null
+  },
+  {
+    "label": "HDPE",
+    "Recycled": 0.21,
+    "Landfilled": 0.02,
+    "Combusted": 2.8,
+    "Composted": null
+  },
+  {
+    "label": "LDPE",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 2.8,
+    "Composted": null
+  },
+  {
+    "label": "PET",
+    "Recycled": 0.23,
+    "Landfilled": 0.02,
+    "Combusted": 2.05,
+    "Composted": null
+  },
+  {
+    "label": "LLDPE",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 2.8,
+    "Composted": null
+  },
+  {
+    "label": "PP",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 2.8,
+    "Composted": null
+  },
+  {
+    "label": "PS",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 3.02,
+    "Composted": null
+  },
+  {
+    "label": "PVC",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 1.26,
+    "Composted": null
+  },
+  {
+    "label": "PLA",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 0.01,
+    "Composted": 0.17
+  },
+  {
+    "label": "Corrugated containers",
+    "Recycled": 0.11,
+    "Landfilled": 0.9,
+    "Combusted": 0.05,
+    "Composted": null
+  },
+  {
+    "label": "Magazines/Third-class mail",
+    "Recycled": 0.02,
+    "Landfilled": 0.42,
+    "Combusted": 0.05,
+    "Composted": null
+  },
+  {
+    "label": "Newspaper",
+    "Recycled": 0.02,
+    "Landfilled": 0.35,
+    "Combusted": 0.05,
+    "Composted": null
+  },
+  {
+    "label": "Office paper",
+    "Recycled": 0.02,
+    "Landfilled": 1.25,
+    "Combusted": 0.0,
+    "Composted": null
+  },
+  {
+    "label": "Phonebooks",
+    "Recycled": 0.04,
+    "Landfilled": 0.35,
+    "Combusted": 0.05,
+    "Composted": null
+  },
+  {
+    "label": "Textbooks",
+    "Recycled": 0.04,
+    "Landfilled": 1.25,
+    "Combusted": 0.05,
+    "Composted": null
+  },
+  {
+    "label": "Dimensional lumber",
+    "Recycled": 0.09,
+    "Landfilled": 0.17,
+    "Combusted": 0.05,
+    "Composted": null
+  },
+  {
+    "label": "Medium-density fiberboard",
+    "Recycled": 0.15,
+    "Landfilled": 0.07,
+    "Combusted": 0.05,
+    "Composted": null
+  },
+  {
+    "label": "Food waste(non-meat)",
+    "Recycled": null,
+    "Landfilled": 0.58,
+    "Combusted": 0.05,
+    "Composted": 0.15
+  },
+  {
+    "label": "Food waste(meat only)",
+    "Recycled": null,
+    "Landfilled": 0.58,
+    "Combusted": 0.05,
+    "Composted": 0.15
+  },
+  {
+    "label": "Beef",
+    "Recycled": null,
+    "Landfilled": 0.58,
+    "Combusted": 0.05,
+    "Composted": 0.15
+  },
+  {
+    "label": "Poultry",
+    "Recycled": null,
+    "Landfilled": 0.58,
+    "Combusted": 0.05,
+    "Composted": 0.15
+  },
+  {
+    "label": "Grains",
+    "Recycled": null,
+    "Landfilled": 0.58,
+    "Combusted": 0.05,
+    "Composted": 0.15
+  },
+  {
+    "label": "Bread",
+    "Recycled": null,
+    "Landfilled": 0.58,
+    "Combusted": 0.05,
+    "Composted": 0.15
+  },
+  {
+    "label": "Fruits and vegetables",
+    "Recycled": null,
+    "Landfilled": 0.58,
+    "Combusted": 0.05,
+    "Composted": 0.15
+  },
+  {
+    "label": "Dairy products",
+    "Recycled": null,
+    "Landfilled": 0.58,
+    "Combusted": 0.05,
+    "Composted": 0.19
+  },
+  {
+    "label": "Yard trimmings",
+    "Recycled": null,
+    "Landfilled": 0.33,
+    "Combusted": 0.05,
+    "Composted": 0.19
+  },
+  {
+    "label": "Grass",
+    "Recycled": null,
+    "Landfilled": 0.26,
+    "Combusted": 0.05,
+    "Composted": 0.19
+  },
+  {
+    "label": "Leaves",
+    "Recycled": null,
+    "Landfilled": 0.26,
+    "Combusted": 0.05,
+    "Composted": 0.19
+  },
+  {
+    "label": "Branches",
+    "Recycled": null,
+    "Landfilled": 0.53,
+    "Combusted": 0.05,
+    "Composted": 0.19
+  },
+  {
+    "label": "Mixed paper(general)",
+    "Recycled": 0.07,
+    "Landfilled": 0.8,
+    "Combusted": 0.05,
+    "Composted": null
+  },
+  {
+    "label": "Mixed paper(primarily from residential)",
+    "Recycled": 0.07,
+    "Landfilled": 0.77,
+    "Combusted": 0.05,
+    "Composted": null
+  },
+  {
+    "label": "Mixed paper(primarily from offices)",
+    "Recycled": 0.03,
+    "Landfilled": 0.75,
+    "Combusted": 0.05,
+    "Composted": null
+  },
+  {
+    "label": "Mixed metals",
+    "Recycled": 0.23,
+    "Landfilled": 0.02,
+    "Combusted": 0.01,
+    "Composted": null
+  },
+  {
+    "label": "Mixed plastics",
+    "Recycled": 0.22,
+    "Landfilled": 0.02,
+    "Combusted": 2.34,
+    "Composted": null
+  },
+  {
+    "label": "Mixed recyclables",
+    "Recycled": 0.09,
+    "Landfilled": 0.68,
+    "Combusted": 0.11,
+    "Composted": null
+  },
+  {
+    "label": "Food waste",
+    "Recycled": null,
+    "Landfilled": 0.58,
+    "Combusted": 0.05,
+    "Composted": 0.15
+  },
+  {
+    "label": "Mixed organics",
+    "Recycled": null,
+    "Landfilled": 0.48,
+    "Combusted": 0.05,
+    "Composted": 0.17
+  },
+  {
+    "label": "Mixed MSW",
+    "Recycled": null,
+    "Landfilled": 0.52,
+    "Combusted": 0.43,
+    "Composted": null
+  },
+  {
+    "label": "Carpet",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 1.68,
+    "Composted": null
+  },
+  {
+    "label": "Desktop CPUs",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 0.4,
+    "Composted": null
+  },
+  {
+    "label": "Portable electronic devices",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 0.89,
+    "Composted": null
+  },
+  {
+    "label": "Flat-panel displays",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 0.74,
+    "Composted": null
+  },
+  {
+    "label": "CRT displays",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 0.64,
+    "Composted": null
+  },
+  {
+    "label": "Electronic peripherals",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 2.23,
+    "Composted": null
+  },
+  {
+    "label": "Hard-copy devices",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 1.92,
+    "Composted": null
+  },
+  {
+    "label": "Mixed electronics",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 0.87,
+    "Composted": null
+  },
+  {
+    "label": "Clay bricks",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": null,
+    "Composted": null
+  },
+  {
+    "label": "Concrete",
+    "Recycled": 0.01,
+    "Landfilled": 0.02,
+    "Combusted": null,
+    "Composted": null
+  },
+  {
+    "label": "Fly ash",
+    "Recycled": 0.01,
+    "Landfilled": 0.02,
+    "Combusted": null,
+    "Composted": null
+  },
+  {
+    "label": "Tires",
+    "Recycled": 0.1,
+    "Landfilled": 0.02,
+    "Combusted": 2.21,
+    "Composted": null
+  },
+  {
+    "label": "Asphalt concrete",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": null,
+    "Composted": null
+  },
+  {
+    "label": "Asphalt shingles",
+    "Recycled": 0.03,
+    "Landfilled": 0.02,
+    "Combusted": 0.7,
+    "Composted": null
+  },
+  {
+    "label": "Drywall",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": null,
+    "Composted": null
+  },
+  {
+    "label": "Fiberglass insulation",
+    "Recycled": 0.05,
+    "Landfilled": 0.02,
+    "Combusted": null,
+    "Composted": null
+  },
+  {
+    "label": "Vinyl Flooring",
+    "Recycled": null,
+    "Landfilled": 0.02,
+    "Combusted": 0.0,
+    "Composted": null
+  },
+  {
+    "label": "Wood flooring",
+    "Recycled": null,
+    "Landfilled": 0.18,
+    "Combusted": 0.08,
+    "Composted": null
+  }
+]

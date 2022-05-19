@@ -1,0 +1,134 @@
+[
+  {
+    "id": 4780133,
+    "email": "mail1@mail.com",
+    "password": "Parolamail123.",
+    "firstName": "Adrian",
+    "lastName": "Catrinoiu",
+    "role": "user",
+    "formData": {
+      "stepYear": 2022,
+      "stepCAEN": "manufacturing",
+      "stepElectricity": {
+        "renewable": 12121,
+        "nonRenewable": 36555,
+        "country": "Romania"
+      },
+      "stepHeating": [
+        {
+          "id": 1652721912141,
+          "label": "Natural gas",
+          "value": 22,
+          "unit": "m³"
+        },
+        {
+          "id": 1652729721474,
+          "label": "Propane gas",
+          "value": 35,
+          "unit": "m³"
+        }
+      ],
+      "stepRefrigerants": [
+        {
+          "id": 1652732590256,
+          "label": "Methane",
+          "kgBegin": 5,
+          "kgEnd": 4.2,
+          "formula": "CH4"
+        }
+      ],
+      "stepWaste": [],
+      "stepTransportation": [
+        {
+          "id": 1652731612302,
+          "label": "Diesel Vehicle",
+          "vehicles": 3,
+          "fuel": 2233,
+          "fuelUnit": "litres",
+          "type": "Passenger Vehicle"
+        },
+        {
+          "id": 1652732884520,
+          "label": "Compressed Natural Gas Light-duty Vehicle",
+          "vehicles": 4,
+          "fuel": 565,
+          "fuelUnit": "m³",
+          "type": "Light-duty Vehicle(Vans,Trucks,SUVs,Pickup)"
+        }
+      ]
+    }
+  },
+  {
+    "id": 3495315,
+    "email": "mail2@mail.com",
+    "password": "Parolamail123.",
+    "firstName": "adrian",
+    "lastName": "catrinoiu",
+    "role": "user",
+    "formData": {
+      "stepYear": 2020,
+      "stepCAEN": "manufacturing",
+      "stepElectricity": {
+        "renewable": 50,
+        "nonRenewable": 1024,
+        "country": "Romania"
+      },
+      "stepHeating": [
+        { "id": 1652948847333, "label": "Wood", "value": 5, "unit": "tons" },
+        { "id": 1652950121527, "label": "Plastics", "value": 1, "unit": "tons" }
+      ],
+      "stepRefrigerants": [
+        {
+          "id": 1652950135805,
+          "label": "Methane",
+          "kgBegin": "5",
+          "kgEnd": 4,
+          "formula": "CH4"
+        },
+        {
+          "id": 1652951095075,
+          "label": "",
+          "kgBegin": 0,
+          "kgEnd": 0,
+          "formula": ""
+        }
+      ],
+      "stepWaste": [
+        {
+          "id": 1652962252186,
+          "label": "Cooper wire",
+          "type": "Landfilled",
+          "value": "122"
+        },
+        {
+          "id": 1652962834723,
+          "label": "Mixed organics",
+          "type": "Combusted",
+          "value": "1.2"
+        },
+        {
+          "id": 1652964359925,
+          "label": "Mixed plastics",
+          "type": "Recycled",
+          "value": "10"
+        }
+      ],
+      "stepTransportation": [
+        {
+          "id": 1652950102897,
+          "label": "Diesel Vehicle",
+          "vehicles": 2,
+          "fuel": 51,
+          "fuelUnit": "litres",
+          "type": "Passenger Vehicle"
+        }
+      ]
+    },
+    "emissions": {
+      "electricity": { "CO2": 0, "CH4": 0, "N2O": 0 },
+      "heating": { "CO2": 0, "CH4": 0, "N2O": 0 },
+      "refrigerants": { "CO2": 0, "CH4": 0, "N2O": 0 },
+      "transportation": { "CO2": 0, "CH4": 0, "N2O": 0 }
+    }
+  }
+]

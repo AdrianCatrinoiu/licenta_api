@@ -1,0 +1,593 @@
+[
+  {
+    "type": "Burning",
+    "typeList": [
+      {
+        "label": "Anthracite Coal",
+        "CO2value": 103.69,
+        "CH4value": 11,
+        "N2Ovalue": 1.6,
+        "conversion": 0.907
+      },
+      {
+        "label": "Bituminous Coal",
+        "CO2value": 93.28,
+        "CH4value": 11,
+        "N2Ovalue": 1.6,
+        "conversion": 0.907
+      },
+      {
+        "label": "Lignite Coal",
+        "CO2value": 97.72,
+        "CH4value": 11,
+        "N2Ovalue": 1.6,
+        "conversion": 0.907
+      },
+      {
+        "label": "Coal coke",
+        "CO2value": 113.67,
+        "CH4value": 11,
+        "N2Ovalue": 1.6,
+        "conversion": 0.907
+      },
+      {
+        "label": "Municipal solid waste",
+        "CO2value": 90.7,
+        "CH4value": 32,
+        "N2Ovalue": 4.2,
+        "conversion": 0.907
+      },
+      {
+        "label": "Plastics",
+        "CO2value": 75,
+        "CH4value": 32,
+        "N2Ovalue": 4.2,
+        "conversion": 0.907
+      },
+      {
+        "label": "Tires",
+        "CO2value": 85.97,
+        "CH4value": 32,
+        "N2Ovalue": 4.2,
+        "conversion": 0.907
+      },
+      {
+        "label": "Agricultural by-products",
+        "CO2value": 118.17,
+        "CH4value": 32,
+        "N2Ovalue": 4.2,
+        "conversion": 0.907
+      },
+      {
+        "label": "Wood",
+        "CO2value": 93.8,
+        "CH4value": 32,
+        "N2Ovalue": 4.2,
+        "conversion": 0.907
+      },
+      {
+        "label": "Natural gas",
+        "CO2value": 53.06,
+        "CH4value": 1,
+        "N2Ovalue": 0.1,
+        "conversion": 35.3147
+      },
+      {
+        "label": "Propane gas",
+        "CO2value": 61.46,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 35.3147
+      },
+      {
+        "label": "Asphalt and Road oil",
+        "CO2value": 75.36,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 3.785
+      },
+      {
+        "label": "Butane",
+        "CO2value": 64.77,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 3.785
+      },
+      {
+        "label": "Crude oil",
+        "CO2value": 74.54,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 3.785
+      },
+      {
+        "label": "Ethane",
+        "CO2value": 59.6,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 3.785
+      },
+      {
+        "label": "Kerosene",
+        "CO2value": 75.2,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 3.785
+      },
+      {
+        "label": "Lubricants",
+        "CO2value": 74.27,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 3.785
+      },
+      {
+        "label": "Propane",
+        "CO2value": 62.87,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 3.785
+      },
+      {
+        "label": "Used oil",
+        "CO2value": 74,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 3.785
+      },
+      {
+        "label": "Biodiesel",
+        "CO2value": 73.84,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 3.785
+      },
+      {
+        "label": "Ethanol",
+        "CO2value": 68.44,
+        "CH4value": 3,
+        "N2Ovalue": 0.6,
+        "conversion": 3.785
+      }
+    ]
+  },
+  {
+    "type": "Refrigerants",
+    "typeList": [
+      {
+        "label": "Carbon dioxide",
+        "GWP": 1,
+        "formula": "CO2"
+      },
+      {
+        "label": "Methane",
+        "GWP": 25,
+        "formula": "CH4"
+      },
+      {
+        "label": "Nitrous oxide",
+        "GWP": 298,
+        "formula": "N2O"
+      },
+      {
+        "label": "Nitrogen trifluoride",
+        "GWP": 17200,
+        "formula": "NF3"
+      },
+      {
+        "label": "Sulfur hexafluoride",
+        "GWP": 22800,
+        "formula": "SF6"
+      },
+      {
+        "label": "HFC-23 (R-23)",
+        "GWP": 14800,
+        "formula": "CHF3"
+      },
+      {
+        "label": "HFC-32 (R-32)",
+        "GWP": 675,
+        "formula": "CH2F2"
+      },
+      {
+        "label": "HFC-41 (R-41)",
+        "GWP": 92,
+        "formula": "CH3F"
+      },
+      {
+        "label": "HFC-125 (R-125)",
+        "GWP": 3500,
+        "formula": "C2HF5"
+      },
+      {
+        "label": "HFC-134 (R-134)",
+        "GWP": 1100,
+        "formula": "C2H2F4"
+      },
+      {
+        "label": "HFC-134a (R-134a)",
+        "GWP": 1430,
+        "formula": "C2H2F4"
+      },
+      {
+        "label": "HFC-143 (R-143)",
+        "GWP": 353,
+        "formula": "C2H3F3"
+      },
+      {
+        "label": "HFC-143a (R-143a)",
+        "GWP": 4470,
+        "formula": "C2H3F3"
+      },
+      {
+        "label": "HFC-152 (R-152)",
+        "GWP": 53,
+        "formula": "C2H4F2"
+      },
+      {
+        "label": "HFC-152a (R-152a)",
+        "GWP": 124,
+        "formula": "C2H4F2"
+      },
+      {
+        "label": "HFC-161 (R-161)",
+        "GWP": 12,
+        "formula": "C2H5F"
+      },
+      {
+        "label": "HFC-227ea (R-227ea)",
+        "GWP": 3220,
+        "formula": "C3HF7"
+      },
+      {
+        "label": "HFC-236cb (R-236cb)",
+        "GWP": 1340,
+        "formula": "C3H2F6"
+      },
+      {
+        "label": "HFC-236ea (R-236ea)",
+        "GWP": 1370,
+        "formula": "C3H2F6"
+      },
+      {
+        "label": "HFC-236fa (R-236fa)",
+        "GWP": 9810,
+        "formula": "C3H2F6"
+      },
+      {
+        "label": "HFC-245ca (R-245ca)",
+        "GWP": 693,
+        "formula": "C3H2F6"
+      },
+      {
+        "label": "HFC-245fa (R-245fa)",
+        "GWP": 1030,
+        "formula": "C3H3F5"
+      },
+      {
+        "label": "HFC-365mfc ",
+        "GWP": 794,
+        "formula": "C3H3F5"
+      },
+      {
+        "label": "HFC-43-10mee (R-4310)",
+        "GWP": 1640,
+        "formula": "C5H2F10"
+      },
+      {
+        "label": "PFC-14 (Perfluoromethane)",
+        "GWP": 7390,
+        "formula": "CF4"
+      },
+      {
+        "label": "PFC-116 (Perfluoroethane)",
+        "GWP": 12200,
+        "formula": "C2F6"
+      },
+      {
+        "label": "PFC-218 (Perfluoropropane)",
+        "GWP": 8830,
+        "formula": "C3F8"
+      },
+      {
+        "label": "PFC-318 (Perfluorocyclobutane)",
+        "GWP": 10300,
+        "formula": "c-C4F8"
+      },
+      {
+        "label": "PFC-3-1-10 (Perfluorobutane)",
+        "GWP": 8860,
+        "formula": "C4F10"
+      },
+      {
+        "label": "PFC-4-1-12 (Perfluoropentane)",
+        "GWP": 9160,
+        "formula": "C5F12"
+      },
+      {
+        "label": "PFC-5-1-14 (Perfluorohexane)",
+        "GWP": 9300,
+        "formula": "C6F14"
+      },
+      {
+        "label": "PFC-9-1-18 (Perfluorodecalin)",
+        "GWP": 7500,
+        "formula": "C10F18"
+      },
+      {
+        "label": "CFC-11",
+        "GWP": 4750,
+        "formula": "CCl3F"
+      },
+      {
+        "label": "CFC-12",
+        "GWP": 10900,
+        "formula": "CCl2F2"
+      },
+      {
+        "label": "CFC-13",
+        "GWP": 14400,
+        "formula": "CClF3"
+      },
+      {
+        "label": "CFC-113",
+        "GWP": 6130,
+        "formula": "CCl2FCClF2"
+      },
+      {
+        "label": "CFC-114",
+        "GWP": 10000,
+        "formula": "CClF2CClF2"
+      },
+      {
+        "label": "CFC-115",
+        "GWP": 7370,
+        "formula": "CClF2CF3"
+      },
+      {
+        "label": "Halon-1301",
+        "GWP": 7140,
+        "formula": "CBrF3"
+      },
+      {
+        "label": "Halon-1211",
+        "GWP": 1890,
+        "formula": "CBrClF2"
+      },
+      {
+        "label": "Halon-2402",
+        "GWP": 1640,
+        "formula": "CBrF2CBrF2"
+      },
+      {
+        "label": "Carbon tetrachloride",
+        "GWP": 1400,
+        "formula": "CCl4"
+      },
+      {
+        "label": "Methyl bromide",
+        "GWP": 5,
+        "formula": "CH3Br"
+      },
+      {
+        "label": "Methyl chloroform",
+        "GWP": 146,
+        "formula": "CH3CCl3"
+      },
+      {
+        "label": "HCFC-21",
+        "GWP": 148,
+        "formula": "CHCl2F"
+      },
+      {
+        "label": "R-22 (HCFC-22)",
+        "GWP": 1810,
+        "formula": "CHClF2"
+      },
+      {
+        "label": "HCFC-123",
+        "GWP": 77,
+        "formula": "CHCl2CF3"
+      },
+      {
+        "label": "HCFC-124",
+        "GWP": 609,
+        "formula": "CHClFCF3"
+      },
+      {
+        "label": "HCFC-141b",
+        "GWP": 725,
+        "formula": "CH3CCl2F"
+      },
+      {
+        "label": "HCFC-142b",
+        "GWP": 2310,
+        "formula": "CH3CClF2"
+      },
+      {
+        "label": "HCFC-225ca",
+        "GWP": 122,
+        "formula": "CHCl2CF2Cf3"
+      },
+      {
+        "label": "HCFC-225cb",
+        "GWP": 595,
+        "formula": "CHClFCF2CClF2"
+      }
+    ]
+  },
+  {
+    "type": "Transportation",
+    "typeList": [
+      {
+        "label": "Electric Vehicle",
+        "conversion": 0,
+        "CO2value": 0,
+        "CH4value": 0,
+        "N2Ovalue": 0
+      },
+      {
+        "label": "Gasoline Vehicle",
+        "conversion": 3.785,
+        "CO2value": 8.78,
+        "CH4value": 0.00038925,
+        "N2Ovalue": 0.000081
+      },
+      {
+        "label": "Diesel Vehicle",
+        "conversion": 3.785,
+        "CO2value": 10.21,
+        "CH4value": 0.00001125,
+        "N2Ovalue": 0.0000225
+      },
+      {
+        "label": "Biodiesel(100%) Vehicle",
+        "conversion": 3.785,
+        "CO2value": 9.45,
+        "CH4value": 0.00001125,
+        "N2Ovalue": 0.0000225
+      },
+      {
+        "label": "Gasoline Hybrid Vehicle",
+        "conversion": 3.785,
+        "CO2value": 8.78,
+        "CH4value": 0.000539061,
+        "N2Ovalue": 0.000112175
+      },
+      {
+        "label": "Gasoline Motorcycle",
+        "conversion": 3.785,
+        "CO2value": 8.78,
+        "CH4value": 0.000336,
+        "N2Ovalue": 0.000345
+      },
+      {
+        "label": "Gasoline Light-duty Vehicle",
+        "conversion": 3.785,
+        "CO2value": 8.78,
+        "CH4value": 0.00026406,
+        "N2Ovalue": 0.00010692
+      },
+      {
+        "label": "Diesel Light-duty Vehicle",
+        "conversion": 3.785,
+        "CO2value": 10.21,
+        "CH4value": 0.0000162,
+        "N2Ovalue": 0.0000243
+      },
+      {
+        "label": "Biodiesel(100%) Light-duty Vehicle",
+        "conversion": 3.785,
+        "CO2value": 9.45,
+        "CH4value": 0.0000081,
+        "N2Ovalue": 0.0000162
+      },
+      {
+        "label": "Compressed Natural Gas Light-duty Vehicle",
+        "conversion": 35.3147,
+        "CO2value": 0.40723948,
+        "CH4value": 0.089312914,
+        "N2Ovalue": 0.006059221
+      },
+      {
+        "label": "Ethanol(100%) Light-duty Vehicle",
+        "conversion": 3.785,
+        "CO2value": 5.75,
+        "CH4value": 0.000891,
+        "N2Ovalue": 0.0010854
+      },
+      {
+        "label": "Gasoline Heavy-duty Vehicle",
+        "conversion": 3.785,
+        "CO2value": 8.78,
+        "CH4value": 0.00029304,
+        "N2Ovalue": 0.00011792
+      },
+      {
+        "label": "Diesel Heavy-duty Vehicle",
+        "conversion": 3.785,
+        "CO2value": 10.21,
+        "CH4value": 0.00004488,
+        "N2Ovalue": 0.00004224
+      },
+      {
+        "label": "Biodiesel(100%) Heavy-duty Vehicle",
+        "conversion": 3.785,
+        "CO2value": 9.45,
+        "CH4value": 0.000044,
+        "N2Ovalue": 0.000044
+      },
+      {
+        "label": "Compressed Natural Gas Heavy-duty Vehicle",
+        "conversion": 35.3147,
+        "CO2value": 0.40723948,
+        "CH4value": 0.129418971,
+        "N2Ovalue": 0.01152
+      },
+      {
+        "label": "Ethanol(100%) Heavy-duty Vehicle",
+        "conversion": 3.785,
+        "CO2value": 5.75,
+        "CH4value": 0.0017336,
+        "N2Ovalue": 0.00154
+      },
+      {
+        "label": "Gasoline Agricultural Vehicle",
+        "conversion": 3.785,
+        "CO2value": 8.78,
+        "CH4value": 0.00126,
+        "N2Ovalue": 0.00022
+      },
+      {
+        "label": "Diesel Agricultural Vehicle",
+        "conversion": 3.785,
+        "CO2value": 10.21,
+        "CH4value": 0.00144,
+        "N2Ovalue": 0.00026
+      },
+      {
+        "label": "Gasoline Ships and Boats",
+        "conversion": 3.785,
+        "CO2value": 8.78,
+        "CH4value": 0.00064,
+        "N2Ovalue": 0.00022
+      },
+      {
+        "label": "Diesel Ships and Boats",
+        "conversion": 3.785,
+        "CO2value": 10.21,
+        "CH4value": 0.00006,
+        "N2Ovalue": 0.00045
+      },
+      {
+        "label": "Jet Fueled Aircraft",
+        "conversion": 3.785,
+        "CO2value": 9.75,
+        "CH4value": 0,
+        "N2Ovalue": 0.0003
+      },
+      {
+        "label": "Aviation Gasoline Aircraft",
+        "conversion": 3.785,
+        "CO2value": 8.31,
+        "CH4value": 0.00706,
+        "N2Ovalue": 0.00011
+      },
+
+      {
+        "label": "Gasoline Non-Road Vehicle",
+        "conversion": 3.785,
+        "CO2value": 8.78,
+        "CH4value": 0.005,
+        "N2Ovalue": 0.00022
+      },
+      {
+        "label": "Diesel Non-Road Vehicle",
+        "conversion": 3.785,
+        "CO2value": 10.21,
+        "CH4value": 0.00057,
+        "N2Ovalue": 0.00026
+      }
+    ]
+  }
+]
