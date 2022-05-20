@@ -24,12 +24,6 @@ module.exports = {
         emissionsAmountCO2: {
           type: Sequelize.FLOAT,
         },
-        emissionsAmountCH4: {
-          type: Sequelize.FLOAT,
-        },
-        emissionsAmountN2O: {
-          type: Sequelize.FLOAT,
-        },
       });
     });
   },

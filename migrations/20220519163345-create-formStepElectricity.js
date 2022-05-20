@@ -2,7 +2,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.query("").then(() => {
-      return queryInterface.createTable("FormStepElectricity", {
+      return queryInterface.createTable("FormStepElectricities", {
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
@@ -18,10 +18,13 @@ module.exports = {
         country: {
           type: Sequelize.STRING,
         },
+        emissionsAmountCO2: {
+          type: Sequelize.FLOAT,
+        },
       });
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("FormStepElectricity");
+    return queryInterface.dropTable("FormStepElectricities");
   },
 };

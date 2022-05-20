@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       renewableAmount: DataTypes.FLOAT,
       nonRenewableAmount: DataTypes.FLOAT,
       country: DataTypes.STRING,
+      emissionsAmountCO2: DataTypes.FLOAT,
     },
     { timestamps: false }
   );

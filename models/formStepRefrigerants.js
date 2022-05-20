@@ -14,8 +14,6 @@ module.exports = (sequelize, DataTypes) => {
       kgEnd: DataTypes.FLOAT,
       formula: DataTypes.STRING,
       emissionsAmountCO2: DataTypes.FLOAT,
-      emissionsAmountCH4: DataTypes.FLOAT,
-      emissionsAmountN2O: DataTypes.FLOAT,
     },
     { timestamps: false }
   );

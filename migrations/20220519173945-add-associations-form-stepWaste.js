@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn(
-      "FormStepWaste", // name of Source model
+      "FormStepWastes", // name of Source model
       "formId", // name of the key we're adding
       {
         type: Sequelize.INTEGER,
@@ -19,7 +19,7 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.removeColumn(
-      "FormStepWaste", // name of Source model
+      "FormStepWastes", // name of Source model
       "formId" // key we want to remove
     );
   },

@@ -1,33 +1,96 @@
-const {
-  getData,
-  saveData,
-  authenticateJWT,
-  calculateEmissions,
-} = require("../utils/utils");
-const Op = require("sequelize").Op;
+const { authenticateJWT, calculateEmissions } = require("../utils/utils");
+const GHGEmissions = require("../db/GHGEmissions.json");
+const electricityEmissions = require("../db/electricityEmissions.json");
+const wasteEmissions = require("../db/wasteEmissions.json");
 
 module.exports = (app, models) => {
   app.post("/form/add", authenticateJWT, async (req, res) => {
     const data = req.body;
-    console.log(req.user);
 
     const user = await models.User.findByPk(req.user.uid);
 
-    console.log(user.firstName);
-    let formId = data.formId || null;
-
+    let formId = data.data.formId || null;
+    if (!formId) {
+      return res.status(404).send("Form not found");
+    }
     if (user) {
       formStep = data.step;
+      switch (formStep) {
+        case "stepHeating":
+          const heating = await models.FormStepHeating.create({
+            label: data.data.label,
+            value: data.data.value,
+            unit: data.data.unit,
+            emissionsAmountCO2: 0,
+            emissionsAmountCH4: 0,
+            emissionsAmountN2O: 0,
+            formId: formId,
+          });
+          return res.status(201).json({ formId, id: heating.id });
+
+        case "stepWaste":
+          const waste = await models.FormStepWaste.create({
+            label: data.data.label,
+            type: data.data.type,
+            value: data.data.value,
+            emissionsAmountCO2: 0,
+            formId: formId,
+          });
+          return res.status(201).json({ formId, id: waste.id });
+
+        case "stepRefrigerants":
+          const refrigerants = await models.FormStepRefrigerants.create({
+            label: data.data.label,
+            kgBegin: data.data.kgBegin,
+            kgEnd: data.data.kgEnd,
+            formula: data.data.formula,
+            emissionsAmountCO2: 0,
+            formId: formId,
+          });
+          return res.status(201).json({ formId, id: refrigerants.id });
+
+        case "stepTransportation":
+          const transportation = await models.FormStepTransportation.create({
+            label: data.data.label,
+            vehicleNr: data.data.vehicleNr,
+            fuelUsed: data.data.fuelUsed,
+            fuelUnit: data.data.fuelUnit,
+            vehicleType: data.data.vehicleType,
+            emissionsAmountCO2: 0,
+            emissionsAmountCH4: 0,
+            emissionsAmountN2O: 0,
+            formId: formId,
+          });
+          return res.status(201).json({ formId, id: transportation.id });
+
+        default:
+          break;
+      }
+
+      res.status(404).send("Incorrect form step");
+    }
+  });
+
+  app.put("/form/update", authenticateJWT, async (req, res) => {
+    const data = req.body;
+
+    const user = await models.User.findByPk(req.user.uid);
+
+    let formId = data.data.formId || null;
+    if (user) {
+      formStep = data.step;
+
       switch (formStep) {
         case "stepYear":
           const existingForm = await models.Form.findOne({
             where: {
-              [Op.or]: [{ userId: user.id, year: data.data }, { id: formId }],
+              userId: user.id,
+              year: data.data,
             },
           });
-
           if (existingForm) {
             formId = existingForm.id;
+            return res.status(201).send("Form already exists");
           } else {
             const newForm = await models.Form.create({
               userId: user.id,
@@ -35,88 +98,365 @@ module.exports = (app, models) => {
               CAEN: "",
             });
             formId = newForm.id;
+            return res.status(200).send({ formId });
           }
-          break;
-        case "stepCAEN":
-          user.stepCAEN = data.stepCAEN;
 
-          break;
+        case "stepCAEN":
+          if (!formId) {
+            return res.status(404).send("Form not found");
+          }
+          await models.Form.update(
+            { CAEN: data.data },
+            { where: { id: formId } }
+          );
+          return res.status(200).send({ formId });
+
         case "stepElectricity":
-          user.stepElectricity = data.stepElectricity;
-          break;
+          if (!formId) {
+            return res.status(404).send("Form not found");
+          }
+          const electricity = await models.FormStepElectricity.findOne({
+            where: {
+              formId: formId,
+            },
+          });
+          if (electricity) {
+            let electricityEmission = {};
+            const form = await models.Form.findByPk(formId);
+
+            // cautam dupa an in tabel
+            electricityEmission = electricityEmissions.find(
+              (electricityEmission) =>
+                electricityEmission.Country === electricity.country &&
+                electricityEmission.Year === form.year &&
+                form.year <= 2020
+            );
+
+            //daca anul selectat este peste anii din tabel punem ultimul an din tabel
+            electricityEmission = electricityEmissions.find(
+              (electricityEmission) =>
+                electricityEmission.Country === data.data.country &&
+                electricityEmission.Year === 2020
+            );
+
+            await models.FormStepElectricity.update(
+              {
+                renewableAmount: data.data.renewableAmount,
+                nonRenewableAmount: data.data.nonRenewableAmount,
+                country: data.data.country,
+                emissionsAmountCO2:
+                  (data.data.nonRenewableAmount * electricityEmission.gCO2) /
+                  1000,
+              },
+              { where: { id: electricity.id } }
+            );
+            return res.status(200).send({
+              formId,
+              id: electricity.id,
+              emissionsAmountCO2:
+                (data.data.nonRenewableAmount * electricityEmission.gCO2) /
+                1000,
+            });
+          } else {
+            const newElectricity = await models.FormStepElectricity.create({
+              renewableAmount: data.data.renewableAmount,
+              nonRenewableAmount: 0,
+              country: data.data.country,
+              emissionsAmountCO2: 0,
+              formId: formId,
+            });
+            return res
+              .status(200)
+              .send({ formId, id: newElectricity.id, emissionsAmountCO2: 0 });
+          }
+
         case "stepHeating":
-          user.stepHeating = data.stepHeating;
-          break;
+          if (!formId) {
+            return res.status(404).send("Form not found");
+          }
+          const heating = await models.FormStepHeating.findOne({
+            where: {
+              formId: formId,
+              id: data.data.id,
+            },
+          });
+          if (heating) {
+            const heatingEmission = GHGEmissions.find(
+              (GHGEmission) => GHGEmission.type === "Burning"
+            );
+            const heatingEmissionValue = heatingEmission.typeList.find(
+              (type) => type.label === data.data.label
+            );
+
+            await models.FormStepHeating.update(
+              {
+                label: data.data.label,
+                value: data.data.value,
+                unit: data.data.unit,
+                emissionsAmountCO2:
+                  data.data.value * heatingEmissionValue.CO2value,
+                emissionsAmountCH4:
+                  data.data.value * heatingEmissionValue.CH4value,
+                emissionsAmountN2O:
+                  data.data.value * heatingEmissionValue.N2Ovalue,
+              },
+              {
+                where: {
+                  id: data.data.id,
+                },
+              }
+            );
+
+            return res.status(200).send({
+              formId,
+              id: heating.id,
+              emissionsAmountCO2:
+                data.data.value * heatingEmissionValue.CO2value,
+              emissionsAmountCH4:
+                data.data.value * heatingEmissionValue.CH4value,
+              emissionsAmountN2O:
+                data.data.value * heatingEmissionValue.N2Ovalue,
+            });
+          }
+          return res.status(404).send("Item not found");
+
         case "stepWaste":
-          user.stepWaste = data.stepWaste;
-          break;
+          if (!formId) {
+            return res.status(404).send("Form not found");
+          }
+          const waste = await models.FormStepWaste.findOne({
+            where: {
+              formId: formId,
+              id: data.data.id,
+            },
+          });
+          if (waste) {
+            const wasteEmissionValue = wasteEmissions.find(
+              (type) => type.label === data.data.label
+            );
+            await models.FormStepWaste.update(
+              {
+                label: data.data.label,
+                type: data.data.type,
+                value: data.data.value,
+                emissionsAmountCO2:
+                  data.data.value *
+                  (wasteEmissionValue[waste.type] * 1.102) *
+                  1000,
+              },
+              {
+                where: {
+                  id: waste.id,
+                  emissionsAmountCO2:
+                    data.data.value *
+                    (wasteEmissionValue[waste.type] * 1.102) *
+                    1000,
+                },
+              }
+            );
+            return res.status(200).send({ formId, id: waste.id });
+          }
+          return res.status(404).send("Item not found");
+
         case "stepRefrigerants":
-          user.stepRefrigerants = data.stepRefrigerants;
-          break;
+          if (!formId) {
+            return res.status(404).send("Form not found");
+          }
+          const refrigerants = await models.FormStepRefrigerants.findOne({
+            where: {
+              formId: formId,
+              id: data.data.id,
+            },
+          });
+          if (refrigerants) {
+            const refrigerantEmission = GHGEmissions.find(
+              (GHGEmission) => GHGEmission.type === "Refrigerants"
+            );
+            const refrigerantEmissionValue = refrigerantEmission.typeList.find(
+              (type) => type.label === data.data.label
+            );
+
+            await models.FormStepRefrigerants.update(
+              {
+                label: data.data.label,
+                kgBegin: data.data.kgBegin,
+                kgEnd: data.data.kgEnd,
+                formula: data.data.formula,
+                emissionsAmountCO2:
+                  (data.data.kgBegin - data.data.kgEnd) *
+                  refrigerantEmissionValue.GWP,
+              },
+              {
+                where: {
+                  id: refrigerants.id,
+                },
+              }
+            );
+            return res.status(200).send({
+              formId,
+              id: refrigerants.id,
+              emissionsAmountCO2:
+                (data.data.kgBegin - data.data.kgEnd) *
+                refrigerantEmissionValue.GWP,
+            });
+          }
+          return res.status(404).send("Item not found");
+
         case "stepTransportation":
-          user.stepTransportation = data.stepTransportation;
-          break;
+          if (!formId) {
+            return res.status(404).send("Form not found");
+          }
+          const transportation = await models.FormStepTransportation.findOne({
+            where: {
+              formId: formId,
+              id: data.data.id,
+            },
+          });
+          if (transportation) {
+            const transportEmission = GHGEmissions.find(
+              (GHGEmission) => GHGEmission.type === "Transportation"
+            );
+            const transportEmissionValue = transportEmission.typeList.find(
+              (type) => type.label === data.data.label
+            );
+            await models.FormStepTransportation.update(
+              {
+                label: data.data.label,
+                vehicleNr: data.data.vehicleNr,
+                fuelUsed: data.data.fuelUsed,
+                fuelUnit: data.data.fuelUnit,
+                vehicleType: data.data.vehicleType,
+                emissionsAmountCO2:
+                  data.data.fuel *
+                  data.data.vehicles *
+                  transportEmissionValue.CO2value,
+                emissionsAmountCH4:
+                  data.data.fuel *
+                  data.data.vehicles *
+                  transportEmissionValue.CH4value,
+                emissionsAmountN2O:
+                  data.data.fuel *
+                  data.data.vehicles *
+                  transportEmissionValue.N2Ovalue,
+              },
+              { where: { id: transportation.id } }
+            );
+            return res.status(200).send({
+              formId,
+              id: transportation.id,
+              emissionsAmountCO2:
+                data.data.fuel *
+                data.data.vehicles *
+                transportEmissionValue.CO2value,
+              emissionsAmountCH4:
+                data.data.fuel *
+                data.data.vehicles *
+                transportEmissionValue.CH4value,
+              emissionsAmountN2O:
+                data.data.fuel *
+                data.data.vehicles *
+                transportEmissionValue.N2Ovalue,
+            });
+          }
+          return res.status(404).send("Item not found");
 
         default:
           break;
       }
-      await user.save();
 
-      res.status(200).send("Item added");
-    }
-  });
-
-  app.put("/form/update", authenticateJWT, (req, res) => {
-    const { userId, updateData } = req.body;
-    const users = getData("../db/users.json");
-    const user = users.find((u) => u.id === userId);
-    if (user) {
-      formStep = updateData.step;
-      if (Array.isArray(user.formData[formStep])) {
-        user.formData[formStep].map((step, index) => {
-          if (step.id === updateData.data.id) {
-            user.formData[formStep][index] = updateData.data;
-          }
-        });
-      } else {
-        user.formData[formStep] = updateData.data;
-      }
-
-      saveData(users, "../db/users.json");
       res.status(200).send("Item updated");
     }
   });
 
-  app.delete("/form/delete", authenticateJWT, (req, res) => {
-    const { userId, deleteData } = req.body;
-    const users = getData("../db/users.json");
-    const user = users.find((u) => u.id === userId);
+  app.delete("/form/delete", authenticateJWT, async (req, res) => {
+    const data = req.body;
+
+    const user = await models.User.findByPk(req.user.uid);
+
+    let formId = data.data.formId;
+    if (!formId) {
+      return res.status(404).send("Form not found");
+    }
     if (user) {
-      formStep = deleteData.step;
-      if (Array.isArray(user.formData[formStep])) {
-        user.formData[formStep].filter((step, index) => {
-          if (step.id === deleteData.data.id) {
-            user.formData[formStep].splice(index, 1);
+      formStep = data.step;
+
+      switch (formStep) {
+        case "stepHeating":
+          const heating = await models.FormStepHeating.findOne({
+            where: {
+              formId: formId,
+              id: data.data.id,
+            },
+          });
+          if (heating) {
+            await models.FormStepHeating.destroy({
+              where: { id: heating.id },
+            });
+            return res.status(200).send("Item deleted");
           }
-        });
-      } else if (formStep === "stepElectricity") {
-        user.formData[formStep] = {};
-      } else {
-        user.formData[formStep] = formStep === "stepYear" ? 0 : "";
+          return res.status(404).send("Item not found");
+        case "stepWaste":
+          const waste = await models.FormStepWaste.findOne({
+            where: {
+              formId: formId,
+              id: data.data.id,
+            },
+          });
+          if (waste) {
+            await models.FormStepWaste.destroy({
+              where: { id: waste.id },
+            });
+            return res.status(200).send("Item deleted");
+          }
+          return res.status(404).send("Item not found");
+        case "stepRefrigerants":
+          const refrigerants = await models.FormStepRefrigerants.findOne({
+            where: {
+              formId: formId,
+              id: data.data.id,
+            },
+          });
+          if (refrigerants) {
+            await models.FormStepRefrigerants.destroy({
+              where: { id: refrigerants.id },
+            });
+            return res.status(200).send("Item deleted");
+          }
+          return res.status(404).send("Item not found");
+        case "stepTransportation":
+          const transportation = await models.FormStepTransportation.findOne({
+            where: {
+              formId: formId,
+              id: data.data.id,
+            },
+          });
+          if (transportation) {
+            await models.FormStepTransportation.destroy({
+              where: { id: transportation.id },
+            });
+            return res.status(200).send("Item deleted");
+          }
+          return res.status(404).send("Item not found");
+
+        default:
+          break;
       }
 
-      saveData(users, "../db/users.json");
-      res.status(200).send("Item deleted");
+      res.status(401).send("Item not deleted");
     }
   });
 
-  app.post("/form/calculate", authenticateJWT, (req, res) => {
-    const { userId, formData } = req.body;
-    const users = getData("../db/users.json");
-    const user = users.find((u) => u.id === userId);
+  app.post("/form/calculate", authenticateJWT, async (req, res) => {
+    const data = req.body;
+
+    const user = await models.User.findByPk(req.user.uid);
+
+    let formId = data.data.formId;
+    if (!formId) {
+      return res.status(404).send("Form not found");
+    }
     if (user) {
-      const emissions = calculateEmissions(user.formData);
-      console.log("emissions", emissions);
+      const emissions = calculateEmissions();
       res.status(200).json(emissions);
     }
   });
