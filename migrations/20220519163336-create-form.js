@@ -15,6 +15,12 @@ module.exports = {
         CAEN: {
           type: Sequelize.STRING,
         },
+        updatedAt: {
+          type: Sequelize.DATE,
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+        },
       });
     });
   },

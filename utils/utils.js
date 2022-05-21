@@ -34,15 +34,15 @@ module.exports = {
   },
 
   calculateEmissions: (formData) => {
-    const GHGEmissions = getData("../db/GHGEmissions.json");
-    const electricityEmissions = getData("../db/electricityEmissions.json");
-    const wasteEmissions = getData("../db/wasteEmissions.json");
+    const GHGEmissions = require("../db/GHGEmissions.json");
+    const electricityEmissions = require("../db/electricityEmissions.json");
+    const wasteEmissions = require("../db/wasteEmissions.json");
 
     let emissions = {
-      electricity: { CO2: 0, CH4: 0, N2O: 0 },
+      electricity: { CO2: 0 },
       heating: { CO2: 0, CH4: 0, N2O: 0 },
       waste: { CO2: 0, CH4: 0, N2O: 0 },
-      refrigerants: { CO2: 0, CH4: 0, N2O: 0 },
+      refrigerants: { CO2: 0 },
       transportation: { CO2: 0, CH4: 0, N2O: 0 },
     };
     let electricityEmission = {};
@@ -64,7 +64,8 @@ module.exports = {
     }
 
     emissions.electricity.CO2 =
-      (formData.stepElectricity.nonRenewable * electricityEmission.gCO2) / 1000;
+      (formData.stepElectricity.nonRenewableAmount * electricityEmission.gCO2) /
+      1000;
 
     formData.stepHeating.forEach((heating) => {
       if (heating.label) {
@@ -112,18 +113,22 @@ module.exports = {
       const transportEmissionValue = transportEmission.typeList.find(
         (type) => type.label === transportation.label
       );
-      emissions.transportation.CO2 +=
-        transportation.fuel *
-        transportation.vehicles *
-        transportEmissionValue.CO2value;
-      emissions.transportation.CH4 +=
-        transportation.fuel *
-        transportation.vehicles *
-        transportEmissionValue.CH4value;
-      emissions.transportation.N2O +=
-        transportation.fuel *
-        transportation.vehicles *
-        transportEmissionValue.N2Ovalue;
+      if (transportation.fuelUnit === "litres") {
+        emissions.transportation.CO2 +=
+          transportation.fuelUsed * 0.2641722 * transportEmissionValue.CO2value;
+        emissions.transportation.CH4 +=
+          transportation.fuelUsed * 0.2641722 * transportEmissionValue.CH4value;
+        emissions.transportation.N2O +=
+          transportation.fuelUsed * 0.2641722 * transportEmissionValue.N2Ovalue;
+      }
+      if (transportation.fuelUnit === "m³") {
+        emissions.transportation.CO2 +=
+          transportation.fuelUsed * 0.0283168 * transportEmissionValue.CO2value;
+        emissions.transportation.CH4 +=
+          transportation.fuelUsed * 0.0283168 * transportEmissionValue.CH4value;
+        emissions.transportation.N2O +=
+          transportation.fuelUsed * 0.0283168 * transportEmissionValue.N2Ovalue;
+      }
     });
 
     return emissions;

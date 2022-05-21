@@ -4,15 +4,8 @@ const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
 const basename = path.basename(__filename);
-// const dotenv = require("dotenv");
-// dotenv.config({ path: "../.env" });
-let models = {};
 
-// console.log("-> process.env.DB_NAME: " + process.env.DB_NAME);
-// console.log("-> process.env.DB_USERNAME: " + process.env.DB_USERNAME);
-// console.log("-> process.env.DB_PASSWORD: " + process.env.DB_PASSWORD);
-// console.log("=> process.env.DB_HOST: " + process.env.DB_HOST);
-// console.log("-> process.env.DB_PORT" + process.env.DB_PORT);
+let models = {};
 
 var pg = require("pg");
 pg.defaults.ssl = true;
@@ -61,28 +54,6 @@ const sequelize = new Sequelize(
     // timezone: '+05:30'
   }
 );
-
-// sequelize.sync();
-
-// const sequelize = new Sequelize(
-//   process.env.DATABASE_NAME_DB_CONFIG,
-//   process.env.USER_NAME_DB_CONFIG,
-//   process.env.USER_PASSWORD_DB_CONFIG,
-//   {
-//       host: process.env.HOST_DB_CONFIG,
-//       dialect: process.env.DIALECT_DB_CONFIG,
-//       protocol: process.env.PROTOCOL_DB_CONFIG,
-//       logging:  true,
-//       dialectOptions: {
-//           ssl: true
-//       },
-//       pool: {
-//           max: 5,
-//           min: 0,
-//           idle: 10000
-//       }
-//   }
-// );
 
 fs.readdirSync(__dirname)
   .filter((file) => {
