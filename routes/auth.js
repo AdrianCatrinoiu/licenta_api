@@ -76,7 +76,6 @@ module.exports = (app, models) => {
 
   app.post("/auth/login", async (req, res) => {
     const userData = req.body;
-
     if (!userData.email || !userData.password) {
       return res
         .status(403)
@@ -90,8 +89,10 @@ module.exports = (app, models) => {
       return res.status(403).send({ error: true, message: "User not found" });
     }
     const isValidPassword = await user.validPassword(userData.password);
-
-    if (isValidPassword) {
+    const hasForms = await models.Form.findOne({
+      where: { userId: user.id },
+    });
+    if (isValidPassword && hasForms) {
       const token = generateToken({
         uid: user.id,
       });
@@ -134,12 +135,48 @@ module.exports = (app, models) => {
         }
       );
 
+      const allUserFormsData = await models.Form.findAll({
+        where: {
+          userId: user.id,
+        },
+      });
+
+      const allUserFormsYears = allUserFormsData.reduce((acc, curr) => {
+        acc.push(curr.year);
+        return acc;
+      }, []);
+
       res.status(200).json({
         accessToken: token,
         user: {
           email: user.email,
           last_name: user.lastName,
           first_name: user.firstName,
+          userFormYears: allUserFormsYears,
+        },
+        formData: formData,
+      });
+    } else if (isValidPassword && !hasForms) {
+      const token = generateToken({
+        uid: user.id,
+      });
+      let formData = {
+        formId: null,
+        stepYear: 0,
+        stepCAEN: "",
+        stepElectricity: {},
+        stepHeating: [],
+        stepWaste: [],
+        stepRefrigerants: [],
+        stepTransportation: [],
+      };
+      res.status(200).json({
+        accessToken: token,
+        user: {
+          email: user.email,
+          last_name: user.lastName,
+          first_name: user.firstName,
+          userFormYears: [],
         },
         formData: formData,
       });

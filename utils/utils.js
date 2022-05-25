@@ -47,25 +47,27 @@ module.exports = {
     };
     let electricityEmission = {};
     // cautam dupa an in tabel
-    if (formData.stepElectricity.year) {
-      electricityEmission = electricityEmissions.find(
-        (electricityEmission) =>
-          electricityEmission.Country === formData.stepElectricity.country &&
-          electricityEmission.Year === formData.stepElectricity.year &&
-          formData.stepElectricity.year <= 2020
-      );
-    } else {
-      //daca anul selectat este peste anii din tabel punem ultimul an din tabel
-      electricityEmission = electricityEmissions.find(
-        (electricityEmission) =>
-          electricityEmission.Country === formData.stepElectricity.country &&
-          electricityEmission.Year === 2020
-      );
+    if (formData.stepElectricity.country) {
+      if (formData.stepElectricity.year) {
+        electricityEmission = electricityEmissions.find(
+          (electricityEmission) =>
+            electricityEmission.Country === formData.stepElectricity.country &&
+            electricityEmission.Year === formData.stepElectricity.year &&
+            formData.stepElectricity.year <= 2020
+        );
+      } else {
+        //daca anul selectat este peste anii din tabel punem ultimul an din tabel
+        electricityEmission = electricityEmissions.find(
+          (electricityEmission) =>
+            electricityEmission.Country === formData.stepElectricity.country &&
+            electricityEmission.Year === 2020
+        );
+      }
+      emissions.electricity.CO2 =
+        (formData.stepElectricity.nonRenewableAmount *
+          electricityEmission.gCO2) /
+        1000;
     }
-
-    emissions.electricity.CO2 =
-      (formData.stepElectricity.nonRenewableAmount * electricityEmission.gCO2) /
-      1000;
 
     formData.stepHeating.forEach((heating) => {
       if (heating.label) {
@@ -83,13 +85,15 @@ module.exports = {
     });
 
     formData.stepWaste.forEach((waste) => {
-      const wasteEmissionValue = wasteEmissions.find(
-        (type) => type.label === waste.label
-      );
-      emissions.waste.CO2 +=
-        parseFloat(waste.value) *
-        (wasteEmissionValue[waste.type] * 0.907) *
-        1000;
+      if (waste.label) {
+        const wasteEmissionValue = wasteEmissions.find(
+          (type) => type.label === waste.label
+        );
+        emissions.waste.CO2 +=
+          parseFloat(waste.value) *
+          (wasteEmissionValue[waste.type] * 0.907) *
+          1000;
+      }
     });
 
     formData.stepRefrigerants.forEach((refrigerant) => {
@@ -107,27 +111,41 @@ module.exports = {
     });
 
     formData.stepTransportation.forEach((transportation) => {
-      const transportEmission = GHGEmissions.find(
-        (GHGEmission) => GHGEmission.type === "Transportation"
-      );
-      const transportEmissionValue = transportEmission.typeList.find(
-        (type) => type.label === transportation.label
-      );
-      if (transportation.fuelUnit === "litres") {
-        emissions.transportation.CO2 +=
-          transportation.fuelUsed * 0.2641722 * transportEmissionValue.CO2value;
-        emissions.transportation.CH4 +=
-          transportation.fuelUsed * 0.2641722 * transportEmissionValue.CH4value;
-        emissions.transportation.N2O +=
-          transportation.fuelUsed * 0.2641722 * transportEmissionValue.N2Ovalue;
-      }
-      if (transportation.fuelUnit === "m³") {
-        emissions.transportation.CO2 +=
-          transportation.fuelUsed * 0.0283168 * transportEmissionValue.CO2value;
-        emissions.transportation.CH4 +=
-          transportation.fuelUsed * 0.0283168 * transportEmissionValue.CH4value;
-        emissions.transportation.N2O +=
-          transportation.fuelUsed * 0.0283168 * transportEmissionValue.N2Ovalue;
+      if (transportation.label) {
+        const transportEmission = GHGEmissions.find(
+          (GHGEmission) => GHGEmission.type === "Transportation"
+        );
+        const transportEmissionValue = transportEmission.typeList.find(
+          (type) => type.label === transportation.label
+        );
+        if (transportation.fuelUnit === "litres") {
+          emissions.transportation.CO2 +=
+            transportation.fuelUsed *
+            0.2641722 *
+            transportEmissionValue.CO2value;
+          emissions.transportation.CH4 +=
+            transportation.fuelUsed *
+            0.2641722 *
+            transportEmissionValue.CH4value;
+          emissions.transportation.N2O +=
+            transportation.fuelUsed *
+            0.2641722 *
+            transportEmissionValue.N2Ovalue;
+        }
+        if (transportation.fuelUnit === "m³") {
+          emissions.transportation.CO2 +=
+            transportation.fuelUsed *
+            0.0283168 *
+            transportEmissionValue.CO2value;
+          emissions.transportation.CH4 +=
+            transportation.fuelUsed *
+            0.0283168 *
+            transportEmissionValue.CH4value;
+          emissions.transportation.N2O +=
+            transportation.fuelUsed *
+            0.0283168 *
+            transportEmissionValue.N2Ovalue;
+        }
       }
     });
 

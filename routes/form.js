@@ -103,11 +103,22 @@ module.exports = (app, models) => {
               stepRefrigerants: [],
               stepTransportation: [],
             };
-            const stepElectricity = await models.FormStepElectricity.findOne({
+            let stepElectricity = await models.FormStepElectricity.findOne({
               where: {
                 formId: formId,
               },
             });
+            if (!stepElectricity) {
+              const newElectricity = await models.FormStepElectricity.create({
+                formId: formId,
+                renewableAmount: null,
+                nonRenewableAmount: null,
+                country: "",
+                emissionsAmountCO2: 0,
+              });
+              stepElectricity = newElectricity.dataValues;
+            }
+
             const stepHeating = await models.FormStepHeating.findAll({
               where: {
                 formId: formId,
@@ -446,7 +457,6 @@ module.exports = (app, models) => {
                 },
               });
             }
-            console.log("asdasdasd");
           }
           return res.status(404).send("Item not found");
 
