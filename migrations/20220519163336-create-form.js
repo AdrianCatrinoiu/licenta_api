@@ -15,6 +15,18 @@ module.exports = {
         CAEN: {
           type: Sequelize.STRING,
         },
+        emissionCO2Total: {
+          type: Sequelize.FLOAT,
+        },
+        emissionBadge: {
+          type: Sequelize.STRING,
+        },
+        uploadedDocuments: {
+          type: Sequelize.BOOLEAN,
+        },
+        adminBadge: {
+          type: Sequelize.BOOLEAN,
+        },
         updatedAt: {
           type: Sequelize.DATE,
         },

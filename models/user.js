@@ -20,8 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         required: true,
       },
-      firstName: DataTypes.STRING,
-      lastName: DataTypes.STRING,
+      companyName: {
+        type: DataTypes.STRING,
+        required: true,
+      },
+      userRole: DataTypes.STRING,
     },
     { timestamps: false }
   );

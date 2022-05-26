@@ -18,10 +18,11 @@ module.exports = {
           type: Sequelize.STRING,
           required: true,
         },
-        firstName: {
+        companyName: {
           type: Sequelize.STRING,
+          required: true,
         },
-        lastName: {
+        userRole: {
           type: Sequelize.STRING,
         },
       });
