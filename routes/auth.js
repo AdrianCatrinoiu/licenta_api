@@ -1,4 +1,9 @@
-const { getData, saveData, generateToken } = require("../utils/utils");
+const {
+  getData,
+  saveData,
+  generateToken,
+  calculateEmissions,
+} = require("../utils/utils");
 
 module.exports = (app, models) => {
   app.post("/auth/register", async (req, res) => {
@@ -10,12 +15,7 @@ module.exports = (app, models) => {
     });
 
     //check if the userData fields are missing
-    if (
-      !userData.email ||
-      !userData.password ||
-      !userData.firstName ||
-      !userData.lastName
-    ) {
+    if (!userData.email || !userData.password || !userData.companyName) {
       return res
         .status(401)
         .send({ error: true, message: "User data missing" });
@@ -53,8 +53,8 @@ module.exports = (app, models) => {
     const newUser = {
       email: userData.email,
       password: userData.password,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
+      companyName: userData.companyName,
+      userRole: "user",
     };
 
     //append the user data
@@ -67,10 +67,11 @@ module.exports = (app, models) => {
       accessToken: token,
       user: {
         email: user.email,
-        last_name: user.lastName,
-        first_name: user.firstName,
+        companyName: user.companyName,
+        userFormYears: [],
       },
       formData: userForm,
+      emissionsList: [],
     });
   });
 
@@ -146,15 +147,53 @@ module.exports = (app, models) => {
         return acc;
       }, []);
 
+      const emissionsList = await Promise.all(
+        allUserFormsData.map(async (formData) => {
+          const stepYear = formData.dataValues.year;
+          const stepCAEN = formData.dataValues.CAEN;
+          const stepElectricity = await models.FormStepElectricity.findOne({
+            where: { formId: formData.dataValues.id },
+          });
+          const stepHeating = await models.FormStepHeating.findAll({
+            where: { formId: formData.dataValues.id },
+          });
+          const stepWaste = await models.FormStepWaste.findAll({
+            where: { formId: formData.dataValues.id },
+          });
+          const stepRefrigerants = await models.FormStepRefrigerants.findAll({
+            where: { formId: formData.dataValues.id },
+          });
+          const stepTransportation =
+            await models.FormStepTransportation.findAll({
+              where: { formId: formData.dataValues.id },
+            });
+          return {
+            formId: formData.dataValues.id,
+            year: stepYear,
+            emissions: {
+              ...calculateEmissions({
+                stepYear,
+                stepCAEN,
+                stepElectricity,
+                stepHeating,
+                stepWaste,
+                stepRefrigerants,
+                stepTransportation,
+              }),
+            },
+          };
+        })
+      );
+
       res.status(200).json({
         accessToken: token,
         user: {
           email: user.email,
-          last_name: user.lastName,
-          first_name: user.firstName,
+          companyName: user.companyName,
           userFormYears: allUserFormsYears,
         },
         formData: formData,
+        emissionsList: emissionsList,
       });
     } else if (isValidPassword && !hasForms) {
       const token = generateToken({
@@ -170,15 +209,16 @@ module.exports = (app, models) => {
         stepRefrigerants: [],
         stepTransportation: [],
       };
+
       res.status(200).json({
         accessToken: token,
         user: {
           email: user.email,
-          last_name: user.lastName,
-          first_name: user.firstName,
+          companyName: user.companyName,
           userFormYears: [],
         },
         formData: formData,
+        emissionsList: [],
       });
     } else {
       return res

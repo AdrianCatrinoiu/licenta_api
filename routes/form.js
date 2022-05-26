@@ -150,6 +150,10 @@ module.exports = (app, models) => {
             const newForm = await models.Form.create({
               userId: user.dataValues.id,
               year: data.data.data,
+              emissionCO2Total: 0,
+              emissionBadge: "",
+              uploadedDocuments: false,
+              adminBadge: false,
               CAEN: "",
             });
             formId = newForm.id;
@@ -555,9 +559,96 @@ module.exports = (app, models) => {
     }
     if (user) {
       const emissions = calculateEmissions(data.data);
+      console.log("emissions", emissions);
       return res.status(200).json(emissions);
     }
 
     return res.status(404).send("User not found");
+  });
+
+  app.post("/form/rankings", authenticateJWT, async (req, res) => {
+    const { filters } = req.body;
+    let filterStatement = {
+      where: {},
+      order: [],
+    };
+
+    if (filters.sortType.label === "Emissions descending") {
+      filterStatement.order = [["emissionCO2Total", "DESC"]];
+    }
+    if (filters.sortType.label === "Emissions ascending") {
+      filterStatement.order = [["emissionCO2Total", "ASC"]];
+    }
+    if (filters.sortType.label === "Year descending") {
+      filterStatement.order = [["year", "DESC"]];
+    }
+    if (filters.sortType.label === "Year ascending") {
+      filterStatement.order = [["year", "ASC"]];
+    }
+    if (filters.year) {
+      filterStatement.where = {
+        ...filterStatement.where,
+        year: filters.year,
+      };
+    }
+    if (filters.CAEN) {
+      filterStatement.where = {
+        ...filterStatement.where,
+        CAEN: filters.CAEN.value,
+      };
+    }
+    //get all forms
+    const allForms = await models.Form.findAll({
+      limit: 10,
+      where: filterStatement.where,
+      order: filterStatement.order,
+    });
+    const emissionsList = await Promise.all(
+      allForms.map(async (formData) => {
+        const user = await models.User.findOne({
+          where: {
+            id: formData.userId,
+          },
+        });
+
+        const stepYear = formData.dataValues.year;
+        const stepCAEN = formData.dataValues.CAEN;
+        const stepElectricity = await models.FormStepElectricity.findOne({
+          where: { formId: formData.dataValues.id },
+        });
+        const stepHeating = await models.FormStepHeating.findAll({
+          where: { formId: formData.dataValues.id },
+        });
+        const stepWaste = await models.FormStepWaste.findAll({
+          where: { formId: formData.dataValues.id },
+        });
+        const stepRefrigerants = await models.FormStepRefrigerants.findAll({
+          where: { formId: formData.dataValues.id },
+        });
+        const stepTransportation = await models.FormStepTransportation.findAll({
+          where: { formId: formData.dataValues.id },
+        });
+        return {
+          formId: formData.dataValues.id,
+          year: stepYear,
+          companyName: user.companyName,
+          emissions: {
+            ...calculateEmissions({
+              stepYear,
+              stepCAEN,
+              stepElectricity,
+              stepHeating,
+              stepWaste,
+              stepRefrigerants,
+              stepTransportation,
+            }),
+          },
+        };
+      })
+    );
+
+    return res.status(200).json(emissionsList);
+
+    return res.status(404).send("Filters not found");
   });
 };

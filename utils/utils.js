@@ -47,7 +47,7 @@ module.exports = {
     };
     let electricityEmission = {};
     // cautam dupa an in tabel
-    if (formData.stepElectricity.country) {
+    if (formData.stepElectricity && formData.stepElectricity.country) {
       if (formData.stepElectricity.year) {
         electricityEmission = electricityEmissions.find(
           (electricityEmission) =>
@@ -151,4 +151,46 @@ module.exports = {
 
     return emissions;
   },
+};
+
+const getFormData = async (formData) => {
+  const user = await models.User.findOne({
+    where: {
+      id: formData.userId,
+    },
+  });
+
+  const stepYear = formData.dataValues.year;
+  const stepCAEN = formData.dataValues.CAEN;
+  const stepElectricity = await models.FormStepElectricity.findOne({
+    where: { formId: formData.dataValues.id },
+  });
+  const stepHeating = await models.FormStepHeating.findAll({
+    where: { formId: formData.dataValues.id },
+  });
+  const stepWaste = await models.FormStepWaste.findAll({
+    where: { formId: formData.dataValues.id },
+  });
+  const stepRefrigerants = await models.FormStepRefrigerants.findAll({
+    where: { formId: formData.dataValues.id },
+  });
+  const stepTransportation = await models.FormStepTransportation.findAll({
+    where: { formId: formData.dataValues.id },
+  });
+  return {
+    formId: formData.dataValues.id,
+    year: stepYear,
+    companyName: user.companyName,
+    emissions: {
+      ...calculateEmissions({
+        stepYear,
+        stepCAEN,
+        stepElectricity,
+        stepHeating,
+        stepWaste,
+        stepRefrigerants,
+        stepTransportation,
+      }),
+    },
+  };
 };
