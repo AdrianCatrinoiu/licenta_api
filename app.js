@@ -7,10 +7,12 @@ const { start } = require("repl");
 const app = express();
 const bodyParser = require("body-parser");
 const models = require("./models");
+const fileUpload = require("express-fileupload");
 
 app.use(express.static("db"));
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
   res.status(200).send("Hello World");

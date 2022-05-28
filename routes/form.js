@@ -2,8 +2,14 @@ const { authenticateJWT, calculateEmissions } = require("../utils/utils");
 const GHGEmissions = require("../db/GHGEmissions.json");
 const electricityEmissions = require("../db/electricityEmissions.json");
 const wasteEmissions = require("../db/wasteEmissions.json");
-
+const fileUpload = require("express-fileupload");
+const path = require("path");
+const fs = require("fs");
+const { Op } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 module.exports = (app, models) => {
+  app.use(fileUpload());
+
   app.post("/form/add", authenticateJWT, async (req, res) => {
     const data = req.body;
 
@@ -62,7 +68,13 @@ module.exports = (app, models) => {
             formId: formId,
           });
           return res.status(201).json({ formId, id: transportation.id });
-
+        case "stepUploadDocuments":
+          const uploadDocuments = await models.FormStepUploadDocuments.create({
+            step: data.data.data.step,
+            file: data.data.data.file,
+            formId: formId,
+          });
+          return res.status(201).json({ formId, id: uploadDocuments.id });
         default:
           break;
       }
@@ -93,8 +105,8 @@ module.exports = (app, models) => {
               stepYear: data.data.data,
               stepCAEN: existingForm.dataValues.CAEN,
               stepElectricity: {
-                renewableAmount: 0,
-                nonRenewableAmount: 0,
+                renewableAmount: null,
+                nonRenewableAmount: null,
                 country: "",
                 emissionsAmountCO2: 0,
               },
@@ -102,21 +114,19 @@ module.exports = (app, models) => {
               stepWaste: [],
               stepRefrigerants: [],
               stepTransportation: [],
+              stepUploadDocuments: [],
+              adminBadge: "",
+              emissionBadge: "",
             };
-            let stepElectricity = await models.FormStepElectricity.findOne({
-              where: {
-                formId: formId,
-              },
-            });
-            if (!stepElectricity) {
-              const newElectricity = await models.FormStepElectricity.create({
-                formId: formId,
-                renewableAmount: null,
-                nonRenewableAmount: null,
-                country: "",
-                emissionsAmountCO2: 0,
-              });
-              stepElectricity = newElectricity.dataValues;
+            let foundStepElectricity = await models.FormStepElectricity.findOne(
+              {
+                where: {
+                  formId: formId,
+                },
+              }
+            );
+            if (foundStepElectricity) {
+              formData.stepElectricity = foundStepElectricity.dataValues;
             }
 
             const stepHeating = await models.FormStepHeating.findAll({
@@ -140,22 +150,30 @@ module.exports = (app, models) => {
                   formId: formId,
                 },
               });
+            const stepUploadDocuments =
+              await models.FormStepUploadDocuments.findAll({
+                where: {
+                  formId: formId,
+                },
+              });
             formData.stepHeating = stepHeating;
             formData.stepWaste = stepWaste;
             formData.stepRefrigerants = stepRefrigerants;
             formData.stepTransportation = stepTransportation;
-            formData.stepElectricity = stepElectricity;
+            formData.stepUploadDocuments = stepUploadDocuments;
             return res.status(201).json(formData);
           } else {
             const newForm = await models.Form.create({
-              userId: user.dataValues.id,
               year: data.data.data,
+              CAEN: "",
               emissionCO2Total: 0,
               emissionBadge: "",
               uploadedDocuments: false,
-              adminBadge: false,
-              CAEN: "",
+              adminBadge: "",
+              uuid: uuidv4(),
+              userId: user.dataValues.id,
             });
+
             formId = newForm.id;
             return res.status(200).send({ formId });
           }
@@ -475,78 +493,102 @@ module.exports = (app, models) => {
   app.delete("/form/delete", authenticateJWT, async (req, res) => {
     const data = req.body;
 
-    const user = await models.User.findByPk(req.user.uid);
-
     let formId = data.data.formId;
     if (!formId) {
       return res.status(404).send("Form not found");
     }
-    if (user) {
-      formStep = data.data.step;
-      switch (formStep) {
-        case "stepHeating":
-          const heating = await models.FormStepHeating.findOne({
-            where: {
-              formId: formId,
-              id: data.data.data.id,
-            },
+    formStep = data.data.step;
+    switch (formStep) {
+      case "stepHeating":
+        const heating = await models.FormStepHeating.findOne({
+          where: {
+            formId: formId,
+            id: data.data.data.id,
+          },
+        });
+        if (heating) {
+          await models.FormStepHeating.destroy({
+            where: { id: heating.id },
           });
-          if (heating) {
-            await models.FormStepHeating.destroy({
-              where: { id: heating.id },
-            });
-            return res.status(200).send({ formId, id: data.data.data.id });
-          }
-          return res.status(404).send("Item not found");
-        case "stepWaste":
-          const waste = await models.FormStepWaste.findOne({
-            where: {
-              formId: formId,
-              id: data.data.data.id,
-            },
+          return res.status(200).send({ formId, id: data.data.data.id });
+        }
+        return res.status(404).send("Item not found");
+      case "stepWaste":
+        const waste = await models.FormStepWaste.findOne({
+          where: {
+            formId: formId,
+            id: data.data.data.id,
+          },
+        });
+        if (waste) {
+          await models.FormStepWaste.destroy({
+            where: { id: waste.id },
           });
-          if (waste) {
-            await models.FormStepWaste.destroy({
-              where: { id: waste.id },
-            });
-            return res.status(200).send({ formId, id: waste.id });
-          }
-          return res.status(404).send("Item not found");
-        case "stepRefrigerants":
-          const refrigerants = await models.FormStepRefrigerants.findOne({
-            where: {
-              formId: formId,
-              id: data.data.data.id,
-            },
+          return res.status(200).send({ formId, id: waste.id });
+        }
+        return res.status(404).send("Item not found");
+      case "stepRefrigerants":
+        const refrigerants = await models.FormStepRefrigerants.findOne({
+          where: {
+            formId: formId,
+            id: data.data.data.id,
+          },
+        });
+        if (refrigerants) {
+          await models.FormStepRefrigerants.destroy({
+            where: { id: refrigerants.id },
           });
-          if (refrigerants) {
-            await models.FormStepRefrigerants.destroy({
-              where: { id: refrigerants.id },
-            });
-            return res.status(200).send({ formId, id: refrigerants.id });
-          }
-          return res.status(404).send("Item not found");
-        case "stepTransportation":
-          const transportation = await models.FormStepTransportation.findOne({
-            where: {
-              formId: formId,
-              id: data.data.data.id,
-            },
+          return res.status(200).send({ formId, id: refrigerants.id });
+        }
+        return res.status(404).send("Item not found");
+      case "stepTransportation":
+        const transportation = await models.FormStepTransportation.findOne({
+          where: {
+            formId: formId,
+            id: data.data.data.id,
+          },
+        });
+        if (transportation) {
+          await models.FormStepTransportation.destroy({
+            where: { id: transportation.id },
           });
-          if (transportation) {
-            await models.FormStepTransportation.destroy({
-              where: { id: transportation.id },
-            });
-            return res.status(200).send({ formId, id: transportation.id });
-          }
-          return res.status(404).send("Item not found");
+          return res.status(200).send({ formId, id: transportation.id });
+        }
+        return res.status(404).send("Item not found");
 
-        default:
-          break;
-      }
+      case "stepUploadDocuments":
+        const uploadDocument = await models.FormStepUploadDocuments.findOne({
+          where: {
+            formId: formId,
+            id: data.data.data.id,
+          },
+        });
 
-      res.status(401).send("Item not deleted");
+        if (uploadDocument) {
+          await models.FormStepUploadDocuments.destroy({
+            where: { id: uploadDocument.id },
+          });
+          if (uploadDocument.file) {
+            fs.unlink(
+              path.resolve(__dirname, `..${uploadDocument.file}`),
+              function () {
+                console.log(
+                  "deleted: " +
+                    JSON.stringify(
+                      path.resolve(__dirname, `..${uploadDocument.file}`)
+                    )
+                );
+              }
+            );
+          }
+          return res.status(200).send({ formId, id: uploadDocument.id });
+        }
+        return res.status(404).send("Item not found");
+      default:
+        break;
     }
+
+    res.status(401).send("Item not deleted");
   });
 
   app.post("/form/calculate", authenticateJWT, async (req, res) => {
@@ -558,9 +600,31 @@ module.exports = (app, models) => {
       return res.status(404).send("Form not found");
     }
     if (user) {
-      const emissions = calculateEmissions(data.data);
-      console.log("emissions", emissions);
-      return res.status(200).json(emissions);
+      const form = await models.Form.findOne({
+        where: {
+          id: formId,
+          userId: user.id,
+        },
+      });
+      if (form) {
+        const emissions = calculateEmissions(data.data);
+        await models.Form.update(
+          {
+            emissionCO2Total:
+              emissions.electricity.CO2 +
+              emissions.heating.CO2 +
+              emissions.waste.CO2 +
+              emissions.refrigerants.CO2 +
+              emissions.transportation.CO2,
+          },
+          { where: { id: form.id } }
+        );
+        return res.status(200).json({
+          adminBadge: form.dataValues.adminBadge,
+          emissionBadge: form.dataValues.emissionBadge,
+          ...emissions,
+        });
+      }
     }
 
     return res.status(404).send("User not found");
@@ -613,6 +677,8 @@ module.exports = (app, models) => {
 
         const stepYear = formData.dataValues.year;
         const stepCAEN = formData.dataValues.CAEN;
+        const adminBadge = formData.dataValues.adminBadge;
+        const emissionBadge = formData.dataValues.emissionBadge;
         const stepElectricity = await models.FormStepElectricity.findOne({
           where: { formId: formData.dataValues.id },
         });
@@ -628,10 +694,15 @@ module.exports = (app, models) => {
         const stepTransportation = await models.FormStepTransportation.findAll({
           where: { formId: formData.dataValues.id },
         });
+        const uuid = formData.dataValues.uuid;
+
         return {
           formId: formData.dataValues.id,
           year: stepYear,
           companyName: user.companyName,
+          adminBadge: adminBadge,
+          emissionBadge: emissionBadge,
+          uuid: uuid,
           emissions: {
             ...calculateEmissions({
               stepYear,
@@ -648,7 +719,285 @@ module.exports = (app, models) => {
     );
 
     return res.status(200).json(emissionsList);
+  });
 
-    return res.status(404).send("Filters not found");
+  app.post("/form/uploadDocuments", authenticateJWT, async (req, res) => {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(403).send("No files were uploaded.");
+    }
+    const data = req.body;
+    const file = req.files.file;
+    const fileName = file.name;
+    let formId = data.formId;
+    if (!formId) {
+      return res.status(404).send("Form not found");
+    }
+    const form = await models.Form.findOne({
+      where: {
+        id: formId,
+      },
+    });
+    if (form) {
+      await file.mv(path.resolve(__dirname, "../uploads/", fileName));
+
+      const uploadDocuments = await models.FormStepUploadDocuments.findOne({
+        where: {
+          formId: formId,
+          id: data.id,
+        },
+      });
+      if (uploadDocuments) {
+        await models.FormStepUploadDocuments.update(
+          {
+            step: data.step,
+            file: `/uploads/${fileName}`,
+          },
+          {
+            where: { id: uploadDocuments.id },
+          }
+        );
+        await models.Form.update(
+          {
+            adminBadge: "pending",
+            uploadedDocuments: true,
+          },
+          {
+            where: { id: formId },
+          }
+        );
+        return res.status(200).send({ formId, id: uploadDocuments.id });
+      }
+      return res.status(404).send("Item not found");
+    }
+    res.status(401).send("Item not uploaded");
+  });
+
+  app.get("/form/getForms", authenticateJWT, async (req, res) => {
+    const user = await models.User.findByPk(req.user.uid);
+
+    if (user) {
+      //check if user is admin
+      if (user.userRole === "admin") {
+        const formsNotVerified = await models.Form.findAll({
+          where: {
+            adminBadge: {
+              [Op.eq]: "pending",
+            },
+          },
+        });
+        console.log("formsNotVerified", formsNotVerified);
+        const allFormsData = await Promise.all(
+          formsNotVerified.map(async (userForm) => {
+            const user = await models.User.findOne({
+              where: {
+                id: userForm.userId,
+              },
+            });
+            let formData = {
+              formId: null,
+              stepYear: 0,
+              stepCAEN: "",
+              stepElectricity: {},
+              stepHeating: [],
+              stepWaste: [],
+              stepRefrigerants: [],
+              stepTransportation: [],
+              stepUploadDocuments: [],
+              adminBadge: "",
+              emissionBadge: "",
+            };
+            formData.formId = userForm.id;
+            formData.stepYear = userForm.year;
+            formData.stepCAEN = userForm.CAEN;
+            formData.adminBadge = userForm.adminBadge;
+            formData.emissionBadge = userForm.emissionBadge;
+            formData.stepElectricity = await models.FormStepElectricity.findOne(
+              {
+                where: { formId: userForm.dataValues.id },
+              }
+            );
+            formData.stepHeating = await models.FormStepHeating.findAll({
+              where: { formId: userForm.dataValues.id },
+            });
+            formData.stepWaste = await models.FormStepWaste.findAll({
+              where: { formId: userForm.dataValues.id },
+            });
+            formData.stepRefrigerants =
+              await models.FormStepRefrigerants.findAll({
+                where: { formId: userForm.dataValues.id },
+              });
+            formData.stepTransportation =
+              await models.FormStepTransportation.findAll({
+                where: { formId: userForm.dataValues.id },
+              });
+            formData.stepUploadDocuments =
+              await models.FormStepUploadDocuments.findAll({
+                where: { formId: userForm.dataValues.id },
+              });
+            formData.stepUploadDocuments.forEach((doc) => {
+              doc.dataValues.file = doc.dataValues.file.replace(
+                "/uploads/",
+                ""
+              );
+            });
+            return { user: { ...user.dataValues }, formData: { ...formData } };
+          })
+        );
+
+        return res.status(200).json(allFormsData);
+      }
+      return res.status(401).send("Unauthorized");
+    }
+  });
+
+  app.post("/form/verifyDocuments", authenticateJWT, async (req, res) => {
+    const data = req.body;
+    console.log("data", data);
+    let formId = data.verdict.formId;
+    if (!formId) {
+      return res.status(404).send("Form not found");
+    }
+    const form = await models.Form.findOne({
+      where: {
+        id: formId,
+      },
+    });
+    if (form) {
+      if (data.verdict.verdict === "verified") {
+        await models.Form.update(
+          {
+            adminBadge: "verified",
+          },
+          {
+            where: { id: formId },
+          }
+        );
+        return res.status(200).send({ formId, verdict: form.verdict });
+      } else {
+        await models.Form.update(
+          {
+            adminBadge: "rejected",
+          },
+          {
+            where: { id: formId },
+          }
+        );
+        return res.status(200).send({ formId, verdict: form.verdict });
+      }
+    }
+    res.status(401).send("Item not updated");
+  });
+
+  app.get("/form/getEmissionsList", authenticateJWT, async (req, res) => {
+    const user = await models.User.findByPk(req.user.uid);
+    if (user) {
+      //check if user is admin
+
+      const allUserFormsData = await models.Form.findAll({
+        where: {
+          userId: user.id,
+        },
+      });
+      const emissionsList = await Promise.all(
+        allUserFormsData.map(async (formData) => {
+          const stepYear = formData.dataValues.year;
+          const stepCAEN = formData.dataValues.CAEN;
+          const stepElectricity = await models.FormStepElectricity.findOne({
+            where: { formId: formData.dataValues.id },
+          });
+          const stepHeating = await models.FormStepHeating.findAll({
+            where: { formId: formData.dataValues.id },
+          });
+          const stepWaste = await models.FormStepWaste.findAll({
+            where: { formId: formData.dataValues.id },
+          });
+          const stepRefrigerants = await models.FormStepRefrigerants.findAll({
+            where: { formId: formData.dataValues.id },
+          });
+          const stepTransportation =
+            await models.FormStepTransportation.findAll({
+              where: { formId: formData.dataValues.id },
+            });
+          const uuid = formData.dataValues.uuid;
+
+          return {
+            formId: formData.dataValues.id,
+            year: stepYear,
+            adminBadge: formData.dataValues.adminBadge,
+            emissionBadge: formData.dataValues.emissionBadge,
+            uuid: uuid,
+            emissions: {
+              ...calculateEmissions({
+                stepYear,
+                stepCAEN,
+                stepElectricity,
+                stepHeating,
+                stepWaste,
+                stepRefrigerants,
+                stepTransportation,
+              }),
+            },
+          };
+        })
+      );
+      console.log("emissionsList", emissionsList);
+
+      return res.status(200).json(emissionsList);
+    }
+    return res.status(401).send("Unauthorized");
+  });
+
+  app.get("/form/share/:formUuid", async (req, res) => {
+    const formUuid = req.params.formUuid;
+    console.log("req.params ", req.params);
+    console.log("formUuid", formUuid);
+    const form = await models.Form.findOne({
+      where: {
+        uuid: formUuid,
+      },
+    });
+    const user = await models.User.findOne({
+      where: {
+        id: form.userId,
+      },
+    });
+    console.log("form", form);
+    if (form) {
+      const stepYear = form.dataValues.year;
+      const stepCAEN = form.dataValues.CAEN;
+      const stepElectricity = await models.FormStepElectricity.findOne({
+        where: { formId: form.dataValues.id },
+      });
+      const stepHeating = await models.FormStepHeating.findAll({
+        where: { formId: form.dataValues.id },
+      });
+      const stepWaste = await models.FormStepWaste.findAll({
+        where: { formId: form.dataValues.id },
+      });
+      const stepRefrigerants = await models.FormStepRefrigerants.findAll({
+        where: { formId: form.dataValues.id },
+      });
+      const stepTransportation = await models.FormStepTransportation.findAll({
+        where: { formId: form.dataValues.id },
+      });
+      const emissions = calculateEmissions({
+        stepYear,
+        stepCAEN,
+        stepElectricity,
+        stepHeating,
+        stepWaste,
+        stepRefrigerants,
+        stepTransportation,
+      });
+
+      return res.status(200).send({
+        formId: form.id,
+        year: form.year,
+        emissions: emissions,
+        companyName: user.companyName,
+        emissionBadge: form.emissionBadge,
+      });
+    }
+    return res.status(404).send("Form not found");
   });
 };

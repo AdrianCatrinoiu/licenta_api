@@ -68,6 +68,7 @@ module.exports = (app, models) => {
       user: {
         email: user.email,
         companyName: user.companyName,
+        role: user.userRole,
         userFormYears: [],
       },
       formData: userForm,
@@ -106,6 +107,9 @@ module.exports = (app, models) => {
         stepWaste: [],
         stepRefrigerants: [],
         stepTransportation: [],
+        stepUploadDocuments: [],
+        adminBadge: "",
+        emissionBadge: "",
       };
       //luam ultimul formular creat
       const userForm = await models.Form.findAll({
@@ -118,9 +122,14 @@ module.exports = (app, models) => {
       formData.formId = userForm[0].id;
       formData.stepYear = userForm[0].year;
       formData.stepCAEN = userForm[0].CAEN;
+      formData.adminBadge = userForm[0].adminBadge;
+      formData.emissionBadge = userForm[0].emissionBadge;
       formData.stepElectricity = await models.FormStepElectricity.findOne({
         where: { formId: userForm[0].dataValues.id },
       });
+      if (!formData.stepElectricity) {
+        formData.stepElectricity = {};
+      }
       formData.stepHeating = await models.FormStepHeating.findAll({
         where: { formId: userForm[0].dataValues.id },
       });
@@ -135,6 +144,13 @@ module.exports = (app, models) => {
           where: { formId: userForm[0].dataValues.id },
         }
       );
+      formData.stepUploadDocuments =
+        await models.FormStepUploadDocuments.findAll({
+          where: { formId: userForm[0].dataValues.id },
+        });
+      formData.stepUploadDocuments.forEach((doc) => {
+        doc.dataValues.file = doc.dataValues.file.replace("/uploads/", "");
+      });
 
       const allUserFormsData = await models.Form.findAll({
         where: {
@@ -167,9 +183,13 @@ module.exports = (app, models) => {
             await models.FormStepTransportation.findAll({
               where: { formId: formData.dataValues.id },
             });
+          const uuid = formData.dataValues.uuid;
           return {
             formId: formData.dataValues.id,
             year: stepYear,
+            adminBadge: formData.dataValues.adminBadge,
+            emissionBadge: formData.dataValues.emissionBadge,
+            uuid: uuid,
             emissions: {
               ...calculateEmissions({
                 stepYear,
@@ -190,6 +210,7 @@ module.exports = (app, models) => {
         user: {
           email: user.email,
           companyName: user.companyName,
+          role: user.userRole,
           userFormYears: allUserFormsYears,
         },
         formData: formData,
@@ -208,6 +229,9 @@ module.exports = (app, models) => {
         stepWaste: [],
         stepRefrigerants: [],
         stepTransportation: [],
+        stepUploadDocuments: [],
+        adminBadge: "",
+        emissionBadge: "",
       };
 
       res.status(200).json({
@@ -215,6 +239,7 @@ module.exports = (app, models) => {
         user: {
           email: user.email,
           companyName: user.companyName,
+          role: user.userRole,
           userFormYears: [],
         },
         formData: formData,

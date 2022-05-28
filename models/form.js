@@ -14,9 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       emissionCO2Total: DataTypes.FLOAT,
       emissionBadge: DataTypes.STRING,
       uploadedDocuments: DataTypes.BOOLEAN,
-      adminBadge: DataTypes.BOOLEAN,
+      adminBadge: DataTypes.STRING,
       updatedAt: DataTypes.DATE,
       createdAt: DataTypes.DATE,
+      uuid: DataTypes.STRING,
     },
     {}
   );

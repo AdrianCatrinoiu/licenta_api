@@ -25,7 +25,10 @@ module.exports = {
           type: Sequelize.BOOLEAN,
         },
         adminBadge: {
-          type: Sequelize.BOOLEAN,
+          type: Sequelize.STRING,
+        },
+        uuid: {
+          type: Sequelize.STRING,
         },
         updatedAt: {
           type: Sequelize.DATE,
