@@ -1,0 +1,61 @@
+﻿material;Recycled;Landfilled;Combusted;Composted
+Aluminum Cans; 0,06 ; 0,02 ; 0,01 ;NA
+Aluminum Ingot; 0,04 ; 0,02 ; 0,01 ;NA
+Steel Cans; 0,32 ; 0,02 ; 0,01 ;NA
+Copper Wire; 0,18 ; 0,02 ; 0,01 ;NA
+Glass; 0,05 ; 0,02 ; 0,01 ;NA
+HDPE; 0,21 ; 0,02 ; 2,80 ;NA
+LDPE; NA ; 0,02 ; 2,80 ;NA
+PET; 0,23 ; 0,02 ; 2,05 ;NA
+LLDPE; NA ; 0,02 ; 2,80 ;NA
+PP; NA ; 0,02 ; 2,80 ;NA
+PS; NA ; 0,02 ; 3,02 ;NA
+PVC; NA ; 0,02 ; 1,26 ;NA
+PLA; NA ; 0,02 ; 0,01 ;0,17
+Corrugated Containers; 0,11 ; 0,90 ; 0,05 ;NA
+Magazines/Third-class mail; 0,02 ; 0,42 ; 0,05 ;NA
+Newspaper; 0,02 ; 0,35 ; 0,05 ;NA
+Office Paper; 0,02 ; 1,25 ; 0,05 ;NA
+Phonebooks; 0,04 ; 0,35 ; 0,05 ;NA
+Textbooks; 0,04 ; 1,25 ; 0,05 ;NA
+Dimensional Lumber; 0,09 ; 0,17 ; 0,05 ;NA
+Medium-density Fiberboard; 0,15 ; 0,07 ; 0,05 ;NA
+Food Waste (non-meat); NA ; 0,58 ; 0,05 ;0,15
+Food Waste (meat only); NA ; 0,58 ; 0,05 ;NA
+Beef; NA ; 0,58 ; 0,05 ;0,15
+Poultry; NA ; 0,58 ; 0,05 ;0,15
+Grains; NA ; 0,58 ; 0,05 ;0,15
+Bread; NA ; 0,58 ; 0,05 ;0,15
+Fruits and Vegetables; NA ; 0,58 ; 0,05 ;0,15
+Dairy Products; NA ; 0,58 ; 0,05 ;0,15
+Yard Trimmings; NA ; 0,33 ; 0,05 ;0,19
+Grass; NA ; 0,26 ; 0,05 ;0,19
+Leaves; NA ; 0,26 ; 0,05 ;0,19
+Branches; NA ; 0,53 ; 0,05 ;0,19
+Mixed Paper (general); 0,07 ; 0,80 ; 0,05 ;NA
+Mixed Paper (primarily residential); 0,07 ; 0,77 ; 0,05 ;NA
+Mixed Paper (primarily from offices); 0,03 ; 0,75 ; 0,05 ;NA
+Mixed Metals; 0,23 ; 0,02 ; 0,01 ;NA
+Mixed Plastics; 0,22 ; 0,02 ; 2,34 ;NA
+Mixed Recyclables; 0,09 ; 0,68 ; 0,11 ;NA
+Food Waste; NA ; 0,58 ; 0,05 ;0,15
+Mixed Organics; NA ; 0,48 ; 0,05 ;0,17
+Mixed MSW; NA ; 0,52 ; 0,43 ;NA
+Carpet; NA ; 0,02 ; 1,68 ;NA
+Desktop CPUs; NA ; 0,02 ; 0,40 ;NA
+Portable Electronic Devices; NA ; 0,02 ; 0,89 ;NA
+Flat-panel Displays; NA ; 0,02 ; 0,74 ;NA
+CRT Displays; NA ; 0,02 ; 0,64 ;NA
+Electronic Peripherals; NA ; 0,02 ; 2,23 ;NA
+Hard-copy Devices; NA ; 0,02 ; 1,92 ;NA
+Mixed Electronics; NA ; 0,02 ; 0,87 ;NA
+Clay Bricks; NA ; 0,02 ; NA ;NA
+Concrete; 0,01 ; 0,02 ; NA ;NA
+Fly Ash; 0,01 ; 0,02 ; NA ;NA
+Tires; 0,10 ; 0,02 ; 2,21 ;NA
+Asphalt Concrete; -   ; 0,02 ; NA ;NA
+Asphalt Shingles; 0,03 ; 0,02 ; 0,70 ;NA
+Drywall; NA ; 0,02 ; NA ;NA
+Fiberglass Insulation; 0,05 ; 0,02 ; NA ;NA
+Vinyl Flooring; NA ; 0,02 ; 0,29 ;NA
+Wood Flooring; NA ; 0,18 ; 0,08 ;NA

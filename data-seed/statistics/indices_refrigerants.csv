@@ -1,0 +1,52 @@
+﻿label;formula;GWP;category
+Carbon dioxide;CO2;1;Generic
+Methane;CH4;25;Generic
+Nitrous oxide;N2O;298;Generic
+Nitrogen trifluoride;NF3;17.200;Generic
+Sulfur hexafluoride;SF6;22.800;Generic
+HFC-23 (R-23);CHF3;14.800;Hydrofluorocarbons (HFCs)
+HFC-32 (R-32);CH2F2;675;Hydrofluorocarbons (HFCs)
+HFC-41 (R-41);CH3F;92;Hydrofluorocarbons (HFCs)
+HFC-125 (R-125);C2HF5;3.500;Hydrofluorocarbons (HFCs)
+HFC-134 (R-134);C2H2F4;1.100;Hydrofluorocarbons (HFCs)
+HFC-134a (R-134a);C2H2F4;1.430;Hydrofluorocarbons (HFCs)
+HFC-143 (R-143);C2H3F3;353;Hydrofluorocarbons (HFCs)
+HFC-143a (R-143a);C2H3F3;4.470;Hydrofluorocarbons (HFCs)
+HFC-152 (R-152);C2H4F2;53;Hydrofluorocarbons (HFCs)
+HFC-152a (R-152a);C2H4F2;124;Hydrofluorocarbons (HFCs)
+HFC-161 (R-161);C2H5F;12;Hydrofluorocarbons (HFCs)
+HFC-227ea (R-227ea);C3HF7;3.220;Hydrofluorocarbons (HFCs)
+HFC-236cb (R-236cb);C3H2F6;1.340;Hydrofluorocarbons (HFCs)
+HFC-236ea (R-236ea);C3H2F6;1.370;Hydrofluorocarbons (HFCs)
+HFC-236fa (R-236fa);C3H2F6;9.810;Hydrofluorocarbons (HFCs)
+HFC-245ca (R-245ca);C3H3F5;693;Hydrofluorocarbons (HFCs)
+HFC-245fa (R-245fa);C3H3F5;1.030;Hydrofluorocarbons (HFCs)
+HFC-365mfc;C4H5F5;794;Hydrofluorocarbons (HFCs)
+HFC-43-10mee (R-4310);C5H2F10;1.640;Hydrofluorocarbons (HFCs)
+PFC-14 (Perfluoromethane);CF4;7.390;Perfluorocarbons (PFCs)
+PFC-116 (Perfluoroethane);C2F6;12.200;Perfluorocarbons (PFCs)
+PFC-218 (Perfluoropropane);C3F8;8.830;Perfluorocarbons (PFCs)
+PFC-318 (Perfluorocyclobutane);c-C4F8;10.300;Perfluorocarbons (PFCs)
+PFC-3-1-10 (Perfluorobutane);C4F10;8.860;Perfluorocarbons (PFCs)
+PFC-4-1-12 (Perfluoropentane);C5F12;9.160;Perfluorocarbons (PFCs)
+PFC-5-1-14 (Perfluorohexane);C6F14;9.300;Perfluorocarbons (PFCs)
+PFC-9-1-18 (Perfluorodecalin);C10F18;7.500;Perfluorocarbons (PFCs)
+CFC-11;CCl3F;4.750;Montreal Protocol Substances
+CFC-12;CCl2F2;10.900;Montreal Protocol Substances
+CFC-13;CClF3;14.400;Montreal Protocol Substances
+CFC-113;CCl2FCClF2;6.130;Montreal Protocol Substances
+CFC-114;CClF2CClF2;10.000;Montreal Protocol Substances
+CFC-115;CClF2CF3;7.370;Montreal Protocol Substances
+Halon-1301;CBrF3;7.140;Montreal Protocol Substances
+Halon-1211;CBrClF2;1.890;Montreal Protocol Substances
+Halon-2402;CBrF2CBrF2;1.640;Montreal Protocol Substances
+Carbon tetrachloride;CCl4;1.400;Montreal Protocol Substances
+Methyl bromide;CH3Br;5;Montreal Protocol Substances
+Methyl chloroform;CH3CCl3;146;Montreal Protocol Substances
+R-22 (HCFC-22);CHClF2;1.810;Montreal Protocol Substances
+HCFC-123;CHCl2CF3;77;Montreal Protocol Substances
+HCFC-124;CHClFCF3;609;Montreal Protocol Substances
+HCFC-141b;CH3CCl2F;725;Montreal Protocol Substances
+HCFC-142b;CH3CClF2;2.310;Montreal Protocol Substances
+HCFC-225ca;CHCl2CF2CF3;122;Montreal Protocol Substances
+HCFC-225cb;CHClFCF2CClF2;595;Montreal Protocol Substances

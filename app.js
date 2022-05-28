@@ -20,6 +20,8 @@ app.get("/", (req, res) => {
 
 require("./routes/auth")(app, models);
 require("./routes/form")(app, models);
+require("./routes/seed")(app, models);
+require("./routes/statistics")(app, models);
 
 console.log(`Using db: ${process.env.DB_NAME}`);
 console.log("👍 API Instance Running. OK");

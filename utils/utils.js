@@ -33,7 +33,7 @@ module.exports = {
     return JSON.parse(jsonData);
   },
 
-  calculateEmissions: (formData) => {
+  calculateEmissions: async (formData, models) => {
     const GHGEmissions = require("../db/GHGEmissions.json");
     const electricityEmissions = require("../db/electricityEmissions.json");
     const wasteEmissions = require("../db/wasteEmissions.json");
@@ -45,109 +45,111 @@ module.exports = {
       refrigerants: { CO2: 0 },
       transportation: { CO2: 0, CH4: 0, N2O: 0 },
     };
-    let electricityEmission = {};
+    let electricityEmissionValue = {};
     // cautam dupa an in tabel
     if (formData.stepElectricity && formData.stepElectricity.country) {
       if (formData.stepElectricity.year) {
-        electricityEmission = electricityEmissions.find(
-          (electricityEmission) =>
-            electricityEmission.Country === formData.stepElectricity.country &&
-            electricityEmission.Year === formData.stepElectricity.year &&
-            formData.stepElectricity.year <= 2020
-        );
+        electricityEmissionValue = await models.ElectricityStatistics.findOne({
+          where: {
+            country: formData.stepElectricity.country,
+            year: formData.stepElectricity.year,
+          },
+        });
       } else {
         //daca anul selectat este peste anii din tabel punem ultimul an din tabel
-        electricityEmission = electricityEmissions.find(
-          (electricityEmission) =>
-            electricityEmission.Country === formData.stepElectricity.country &&
-            electricityEmission.Year === 2020
-        );
+        electricityEmissionValue = await models.ElectricityStatistics.findOne({
+          where: {
+            country: formData.stepElectricity.country,
+            year: "2020",
+          },
+        });
       }
       emissions.electricity.CO2 =
-        (formData.stepElectricity.nonRenewableAmount *
-          electricityEmission.gCO2) /
-        1000;
+        formData.stepElectricity.nonRenewableAmount *
+        electricityEmissionValue.dataValues.gCO2;
     }
 
-    formData.stepHeating.forEach((heating) => {
+    for (const heating of formData.stepHeating) {
       if (heating.label) {
-        const heatingEmission = GHGEmissions.find(
-          (GHGEmission) => GHGEmission.type === "Burning"
-        );
-        const heatingEmissionValue = heatingEmission.typeList.find(
-          (type) => type.label === heating.label
-        );
-
-        emissions.heating.CO2 += heating.value * heatingEmissionValue.CO2value;
-        emissions.heating.CH4 += heating.value * heatingEmissionValue.CH4value;
-        emissions.heating.N2O += heating.value * heatingEmissionValue.N2Ovalue;
+        const heatingEmissionValue = await models.BurningStatistics.findOne({
+          where: {
+            label: heating.label,
+          },
+        });
+        if (heatingEmissionValue) {
+          emissions.heating.CO2 +=
+            heating.value * heatingEmissionValue.dataValues.CO2value;
+          emissions.heating.CH4 +=
+            heating.value * heatingEmissionValue.dataValues.CH4value;
+          emissions.heating.N2O +=
+            heating.value * heatingEmissionValue.dataValues.N2Ovalue;
+        }
       }
-    });
+    }
 
-    formData.stepWaste.forEach((waste) => {
+    for (const waste of formData.stepWaste) {
       if (waste.label) {
-        const wasteEmissionValue = wasteEmissions.find(
-          (type) => type.label === waste.label
-        );
-        emissions.waste.CO2 +=
-          parseFloat(waste.value) *
-          (wasteEmissionValue[waste.type] * 0.907) *
-          1000;
+        const wasteEmissionValue = await models.WasteStatistics.findOne({
+          where: {
+            material: waste.label,
+          },
+        });
+        if (wasteEmissionValue) {
+          emissions.waste.CO2 +=
+            parseFloat(waste.value) * wasteEmissionValue[waste.type] * 1000;
+        }
       }
-    });
+    }
 
-    formData.stepRefrigerants.forEach((refrigerant) => {
+    for (const refrigerant of formData.stepRefrigerants) {
       if (refrigerant.label) {
-        const refrigerantEmission = GHGEmissions.find(
-          (GHGEmission) => GHGEmission.type === "Refrigerants"
-        );
-        const refrigerantEmissionValue = refrigerantEmission.typeList.find(
-          (type) => type.label === refrigerant.label
-        );
-        emissions.refrigerants.CO2 +=
-          (parseFloat(refrigerant.kgBegin) - parseFloat(refrigerant.kgEnd)) *
-          refrigerantEmissionValue.GWP;
+        const refrigerantEmissionValue =
+          await models.RefrigerantsStatistics.findOne({
+            where: {
+              label: refrigerant.label,
+            },
+          });
+        if (refrigerantEmissionValue) {
+          emissions.refrigerants.CO2 +=
+            (parseFloat(refrigerant.kgBegin) - parseFloat(refrigerant.kgEnd)) *
+            refrigerantEmissionValue.dataValues.GWP;
+        }
       }
-    });
+    }
 
-    formData.stepTransportation.forEach((transportation) => {
+    for (const transportation of formData.stepTransportation) {
       if (transportation.label) {
-        const transportEmission = GHGEmissions.find(
-          (GHGEmission) => GHGEmission.type === "Transportation"
-        );
-        const transportEmissionValue = transportEmission.typeList.find(
-          (type) => type.label === transportation.label
-        );
+        const transportEmissionValue =
+          await models.TransportationStatistics.findOne({
+            where: {
+              label: transportation.label,
+            },
+          });
+
         if (transportation.fuelUnit === "litres") {
           emissions.transportation.CO2 +=
             transportation.fuelUsed *
-            0.2641722 *
-            transportEmissionValue.CO2value;
+            transportEmissionValue.dataValues.CO2value;
           emissions.transportation.CH4 +=
             transportation.fuelUsed *
-            0.2641722 *
-            transportEmissionValue.CH4value;
+            transportEmissionValue.dataValues.CH4value;
           emissions.transportation.N2O +=
             transportation.fuelUsed *
-            0.2641722 *
-            transportEmissionValue.N2Ovalue;
+            transportEmissionValue.dataValues.N2Ovalue;
         }
         if (transportation.fuelUnit === "m³") {
           emissions.transportation.CO2 +=
             transportation.fuelUsed *
-            0.0283168 *
-            transportEmissionValue.CO2value;
+            transportEmissionValue.dataValues.CO2value;
           emissions.transportation.CH4 +=
             transportation.fuelUsed *
-            0.0283168 *
-            transportEmissionValue.CH4value;
+            transportEmissionValue.dataValues.CH4value;
           emissions.transportation.N2O +=
             transportation.fuelUsed *
-            0.0283168 *
-            transportEmissionValue.N2Ovalue;
+            transportEmissionValue.dataValues.N2Ovalue;
         }
       }
-    });
+    }
 
     return emissions;
   },
@@ -182,15 +184,18 @@ const getFormData = async (formData) => {
     year: stepYear,
     companyName: user.companyName,
     emissions: {
-      ...calculateEmissions({
-        stepYear,
-        stepCAEN,
-        stepElectricity,
-        stepHeating,
-        stepWaste,
-        stepRefrigerants,
-        stepTransportation,
-      }),
+      ...calculateEmissions(
+        {
+          stepYear,
+          stepCAEN,
+          stepElectricity,
+          stepHeating,
+          stepWaste,
+          stepRefrigerants,
+          stepTransportation,
+        },
+        models
+      ),
     },
   };
 };

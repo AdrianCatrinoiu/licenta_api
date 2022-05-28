@@ -191,15 +191,18 @@ module.exports = (app, models) => {
             emissionBadge: formData.dataValues.emissionBadge,
             uuid: uuid,
             emissions: {
-              ...calculateEmissions({
-                stepYear,
-                stepCAEN,
-                stepElectricity,
-                stepHeating,
-                stepWaste,
-                stepRefrigerants,
-                stepTransportation,
-              }),
+              ...calculateEmissions(
+                {
+                  stepYear,
+                  stepCAEN,
+                  stepElectricity,
+                  stepHeating,
+                  stepWaste,
+                  stepRefrigerants,
+                  stepTransportation,
+                },
+                models
+              ),
             },
           };
         })

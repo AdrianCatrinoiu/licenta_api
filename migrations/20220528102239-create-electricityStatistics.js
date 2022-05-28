@@ -2,39 +2,32 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.query("").then(() => {
-      return queryInterface.createTable("FormStepTransportations", {
+      return queryInterface.createTable("ElectricityStatistics", {
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
-          allowNull: false,
         },
-        label: {
-          type: Sequelize.STRING,
-        },
-        vehicleNr: {
-          type: Sequelize.FLOAT,
-        },
-        fuelUsed: {
-          type: Sequelize.FLOAT,
-        },
-        fuelUnit: {
+        country: {
           type: Sequelize.STRING,
         },
 
-        emissionsAmountCO2: {
+        code: {
+          type: Sequelize.STRING,
+        },
+        year: {
+          type: Sequelize.STRING,
+        },
+        gCO2: {
           type: Sequelize.FLOAT,
         },
-        emissionsAmountCH4: {
-          type: Sequelize.FLOAT,
-        },
-        emissionsAmountN2O: {
+        gCO2percentile: {
           type: Sequelize.FLOAT,
         },
       });
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("FormStepTransportations");
+    return queryInterface.dropTable("ElectricityStatistics");
   },
 };

@@ -61,7 +61,6 @@ module.exports = (app, models) => {
             vehicleNr: data.data.data.vehicleNr,
             fuelUsed: data.data.data.fuelUsed,
             fuelUnit: data.data.data.fuelUnit,
-            vehicleType: data.data.data.vehicleType,
             emissionsAmountCO2: 0,
             emissionsAmountCH4: 0,
             emissionsAmountN2O: 0,
@@ -262,6 +261,9 @@ module.exports = (app, models) => {
             const heatingEmission = GHGEmissions.find(
               (GHGEmission) => GHGEmission.type === "Burning"
             );
+            // const heatingEmission = await models.BurningStatistics.findAll()
+            //   .dataValues;
+
             const heatingEmissionValue = heatingEmission.typeList.find(
               (type) => type.label === data.data.data.label
             );
@@ -426,7 +428,6 @@ module.exports = (app, models) => {
                   vehicleNr: data.data.data.vehicleNr,
                   fuelUsed: data.data.data.fuelUsed,
                   fuelUnit: data.data.data.fuelUnit,
-                  vehicleType: data.data.data.vehicleType,
                   emissionsAmountCO2: emissionsAmountCO2,
                   emissionsAmountCH4: emissionsAmountCH4,
                   emissionsAmountN2O: emissionsAmountN2O,
@@ -462,7 +463,6 @@ module.exports = (app, models) => {
                   vehicleNr: data.data.data.vehicleNr,
                   fuelUsed: data.data.data.fuelUsed,
                   fuelUnit: data.data.data.fuelUnit,
-                  vehicleType: data.data.data.vehicleType,
                   emissionsAmountCO2: emissionsAmountCO2,
                   emissionsAmountCH4: emissionsAmountCH4,
                   emissionsAmountN2O: emissionsAmountN2O,
@@ -607,7 +607,7 @@ module.exports = (app, models) => {
         },
       });
       if (form) {
-        const emissions = calculateEmissions(data.data);
+        const emissions = calculateEmissions(data.data, models);
         await models.Form.update(
           {
             emissionCO2Total:
@@ -704,15 +704,18 @@ module.exports = (app, models) => {
           emissionBadge: emissionBadge,
           uuid: uuid,
           emissions: {
-            ...calculateEmissions({
-              stepYear,
-              stepCAEN,
-              stepElectricity,
-              stepHeating,
-              stepWaste,
-              stepRefrigerants,
-              stepTransportation,
-            }),
+            ...calculateEmissions(
+              {
+                stepYear,
+                stepCAEN,
+                stepElectricity,
+                stepHeating,
+                stepWaste,
+                stepRefrigerants,
+                stepTransportation,
+              },
+              models
+            ),
           },
         };
       })
@@ -927,15 +930,18 @@ module.exports = (app, models) => {
             emissionBadge: formData.dataValues.emissionBadge,
             uuid: uuid,
             emissions: {
-              ...calculateEmissions({
-                stepYear,
-                stepCAEN,
-                stepElectricity,
-                stepHeating,
-                stepWaste,
-                stepRefrigerants,
-                stepTransportation,
-              }),
+              ...calculateEmissions(
+                {
+                  stepYear,
+                  stepCAEN,
+                  stepElectricity,
+                  stepHeating,
+                  stepWaste,
+                  stepRefrigerants,
+                  stepTransportation,
+                },
+                models
+              ),
             },
           };
         })
@@ -949,8 +955,6 @@ module.exports = (app, models) => {
 
   app.get("/form/share/:formUuid", async (req, res) => {
     const formUuid = req.params.formUuid;
-    console.log("req.params ", req.params);
-    console.log("formUuid", formUuid);
     const form = await models.Form.findOne({
       where: {
         uuid: formUuid,
@@ -961,7 +965,6 @@ module.exports = (app, models) => {
         id: form.userId,
       },
     });
-    console.log("form", form);
     if (form) {
       const stepYear = form.dataValues.year;
       const stepCAEN = form.dataValues.CAEN;
@@ -980,15 +983,18 @@ module.exports = (app, models) => {
       const stepTransportation = await models.FormStepTransportation.findAll({
         where: { formId: form.dataValues.id },
       });
-      const emissions = calculateEmissions({
-        stepYear,
-        stepCAEN,
-        stepElectricity,
-        stepHeating,
-        stepWaste,
-        stepRefrigerants,
-        stepTransportation,
-      });
+      const emissions = await calculateEmissions(
+        {
+          stepYear,
+          stepCAEN,
+          stepElectricity,
+          stepHeating,
+          stepWaste,
+          stepRefrigerants,
+          stepTransportation,
+        },
+        models
+      );
 
       return res.status(200).send({
         formId: form.id,

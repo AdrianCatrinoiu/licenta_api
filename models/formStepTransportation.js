@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
       vehicleNr: DataTypes.FLOAT,
       fuelUsed: DataTypes.FLOAT,
       fuelUnit: DataTypes.STRING,
-      vehicleType: DataTypes.STRING,
       emissionsAmountCO2: DataTypes.FLOAT,
       emissionsAmountCH4: DataTypes.FLOAT,
       emissionsAmountN2O: DataTypes.FLOAT,

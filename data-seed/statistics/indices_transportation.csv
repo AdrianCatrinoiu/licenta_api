@@ -1,0 +1,26 @@
+﻿label;CO2value;CH4value;N2Ovalue;CO2BiogenicValue;unit
+Electricity - Mobile - Electric Vehicle;0;0;0;;kWh
+Motor Gasoline - Gasoline Passenger Cars;8,78;0,00038925;0,000081;;gal (US)
+Motor Gasoline - Gasoline Light-duty Trucks (Vans, Pickup Trucks, SUVs);8,78;0,00026406;0,00010692;;gal (US)
+Motor Gasoline - Gasoline Heavy-duty Vehicles;8,78;0,00029304;0,00011792;;gal (US)
+Diesel Fuel - Diesel Passenger Cars;10,21;0,00001125;0,0000225;;gal (US)
+Diesel Fuel - Diesel Light-duty Trucks;10,21;0,0000162;0,0000243;;gal (US)
+Diesel Fuel - Diesel Medium- and Heavy-duty Vehicles;10,21;0,00004488;0,00004224;;gal (US)
+Biodiesel (100%) - Biodiesel Passenger Cars;;0,00001125;0,0000225;9,45;gal (US)
+Biodiesel (100%) - Biodiesel Light-duty Vehicles;;0,0000081;0,0000162;9,45;gal (US)
+Biodiesel (100%) - Biodiesel Medium- and Heavy-duty Vehicles;;0,000044;0,000044;9,45;gal (US)
+Compressed Natural Gas - CNG Light-duty Vehicles;0,40723948;0,089312914;0,006059221;;scf
+Compressed Natural Gas - CNG Medium- and Heavy-duty Vehicles;0,40723948;0,129418971;0,01152;;scf
+Ethanol (100%) - Ethanol Light-duty Vehicles;;0,000891;0,0010854;5,75;gal (US)
+Ethanol (100%) - Ethanol Medium- and Heavy-duty Vehicles;;0,0017336;0,00154;5,75;gal (US)
+Motor Gasoline - Hybrid (Gasoline) Passenger Cars;8,78;0,000539061;0,000112175;;gal (US)
+Motor Gasoline - Gasoline Agricultural Equipment;8,78;0,00126;0,00022;;gal (US)
+Diesel Fuel - Diesel Agricultural Equipment;10,21;0,00144;0,00026;;gal (US)
+Motor Gasoline - Gasoline Ships and Boats;8,78;0,00064;0,00022;;gal (US)
+Diesel Fuel - Diesel Ships and Boats;10,21;0,00006;0,00045;;gal (US)
+Jet Fuel - Jet Fuel Aircraft;9,75;0;0,0003;;gal (US)
+Aviation Gasoline - Aviation Gasoline Aircraft;8,31;0,00706;0,00011;;gal (US)
+Motor Gasoline - Gasoline Motorcycles;8,78;0,00336;0,000345;;gal (US)
+Motor Gasoline - Other Gasoline Non-Road Vehicles;8,78;0,0005;0,00022;;gal (US)
+Diesel Fuel - Other Diesel Non-Road Vehicles;10,21;0,00057;0,00026;;gal (US)
+Biodiesel (100%) - Biodiesel Medium- and Heavy-duty Vehicles;0;0,0000295;0,0000295;9,45;gal (US)
