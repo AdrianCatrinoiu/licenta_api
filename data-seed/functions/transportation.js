@@ -23,7 +23,6 @@ const calculateTransportationGrading = (
 
   // add multiplied CO2value values to an array
   transportationData.forEach((row) => {
-    console.log(row);
     if (row.CO2value !== null) {
       const value = row.CO2value;
       numbersList.push(Number(value.toFixed(2)));
@@ -68,7 +67,7 @@ const convertToMetricUnit = (data) => {
       row.CH4value = row.CH4value * 0.264;
       row.N2Ovalue = row.N2Ovalue * 0.264;
       row.CO2BiogenicValue = row.CO2BiogenicValue * 0.264;
-      row.unit = "litre";
+      row.unit = "litres";
     }
     if (row.unit === "scf") {
       row.CO2value = row.CO2value * 35.3;

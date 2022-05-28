@@ -34,10 +34,6 @@ module.exports = {
   },
 
   calculateEmissions: async (formData, models) => {
-    const GHGEmissions = require("../db/GHGEmissions.json");
-    const electricityEmissions = require("../db/electricityEmissions.json");
-    const wasteEmissions = require("../db/wasteEmissions.json");
-
     let emissions = {
       electricity: { CO2: 0 },
       heating: { CO2: 0, CH4: 0, N2O: 0 },
@@ -65,8 +61,9 @@ module.exports = {
         });
       }
       emissions.electricity.CO2 =
-        formData.stepElectricity.nonRenewableAmount *
-        electricityEmissionValue.dataValues.gCO2;
+        (formData.stepElectricity.nonRenewableAmount *
+          electricityEmissionValue.dataValues.gCO2) /
+        1000000;
     }
 
     for (const heating of formData.stepHeating) {
@@ -153,49 +150,166 @@ module.exports = {
 
     return emissions;
   },
-};
+  calculateEmissionBadge: async (formData, emissions, models) => {
+    let emissionBadgeValues = {
+      electricity: 0,
+      heating: 0,
+      waste: 0,
+      refrigerants: 0,
+      transportation: 0,
+    };
+    let emissionTotal = 0;
+    let electricityEmissionValue = {};
 
-const getFormData = async (formData) => {
-  const user = await models.User.findOne({
-    where: {
-      id: formData.userId,
-    },
-  });
+    // cautam dupa an in tabel
+    if (formData.stepElectricity && formData.stepElectricity.country) {
+      if (formData.stepElectricity.year) {
+        electricityEmissionValue = await models.ElectricityStatistics.findOne({
+          where: {
+            country: formData.stepElectricity.country,
+            year: formData.stepElectricity.year,
+          },
+        });
+      } else {
+        //daca anul selectat este peste anii din tabel punem ultimul an din tabel
+        electricityEmissionValue = await models.ElectricityStatistics.findOne({
+          where: {
+            country: formData.stepElectricity.country,
+            year: "2020",
+          },
+        });
+      }
+      emissionTotal =
+        formData.stepElectricity.nonRenewableAmount +
+        formData.stepElectricity.renewableAmount;
 
-  const stepYear = formData.dataValues.year;
-  const stepCAEN = formData.dataValues.CAEN;
-  const stepElectricity = await models.FormStepElectricity.findOne({
-    where: { formId: formData.dataValues.id },
-  });
-  const stepHeating = await models.FormStepHeating.findAll({
-    where: { formId: formData.dataValues.id },
-  });
-  const stepWaste = await models.FormStepWaste.findAll({
-    where: { formId: formData.dataValues.id },
-  });
-  const stepRefrigerants = await models.FormStepRefrigerants.findAll({
-    where: { formId: formData.dataValues.id },
-  });
-  const stepTransportation = await models.FormStepTransportation.findAll({
-    where: { formId: formData.dataValues.id },
-  });
-  return {
-    formId: formData.dataValues.id,
-    year: stepYear,
-    companyName: user.companyName,
-    emissions: {
-      ...calculateEmissions(
-        {
-          stepYear,
-          stepCAEN,
-          stepElectricity,
-          stepHeating,
-          stepWaste,
-          stepRefrigerants,
-          stepTransportation,
-        },
-        models
-      ),
-    },
-  };
+      emissionBadgeValues.electricity =
+        (formData.stepElectricity.nonRenewableAmount / emissionTotal) * 100;
+    }
+    for (const heating of formData.stepHeating) {
+      if (heating.label) {
+        const heatingEmissionValue = await models.BurningStatistics.findOne({
+          where: {
+            label: heating.label,
+          },
+        });
+        if (heatingEmissionValue) {
+          const heatEmission =
+            heating.value * heatingEmissionValue.dataValues.CO2value;
+
+          emissionBadgeValues.heating +=
+            (heatEmission / emissions.heating.CO2) *
+            100 *
+            (heatingEmissionValue.dataValues.CO2percentile / 100);
+        }
+      }
+    }
+
+    for (const waste of formData.stepWaste) {
+      if (waste.label) {
+        const wasteEmissionValue = await models.WasteStatistics.findOne({
+          where: {
+            material: waste.label,
+          },
+        });
+        if (wasteEmissionValue) {
+          const wasteEmission =
+            parseFloat(waste.value) * wasteEmissionValue[waste.type] * 1000;
+          if (wasteEmissionValue[waste.type] > 0) {
+            if (waste.type === "Recycled") {
+              emissionBadgeValues.waste +=
+                (wasteEmission / emissions.waste.CO2) *
+                100 *
+                (wasteEmissionValue.dataValues.percentileRecycled / 100);
+            }
+            if (waste.type === "Landfilled") {
+              emissionBadgeValues.waste +=
+                (wasteEmission / emissions.waste.CO2) *
+                100 *
+                (wasteEmissionValue.dataValues.percentileLandfilled / 100);
+            }
+            if (waste.type === "Combusted") {
+              emissionBadgeValues.waste +=
+                (wasteEmission / emissions.waste.CO2) *
+                100 *
+                (wasteEmissionValue.dataValues.percentileCombusted / 100);
+            }
+            if (waste.type === "Composted") {
+              emissionBadgeValues.waste +=
+                (wasteEmission / emissions.waste.CO2) *
+                100 *
+                (wasteEmissionValue.dataValues.percentileComposted / 100);
+            }
+          }
+        }
+      }
+    }
+
+    for (const refrigerant of formData.stepRefrigerants) {
+      if (refrigerant.label) {
+        const refrigerantEmissionValue =
+          await models.RefrigerantsStatistics.findOne({
+            where: {
+              label: refrigerant.label,
+            },
+          });
+        if (refrigerantEmissionValue) {
+          const refrigerantsEmission =
+            (parseFloat(refrigerant.kgBegin) - parseFloat(refrigerant.kgEnd)) *
+            refrigerantEmissionValue.dataValues.GWP;
+
+          emissionBadgeValues.refrigerants +=
+            (refrigerantsEmission / emissions.refrigerants.CO2) *
+            100 *
+            (refrigerantEmissionValue.dataValues.GWPpercentile / 100);
+        }
+      }
+    }
+
+    for (const transportation of formData.stepTransportation) {
+      if (transportation.label) {
+        const transportEmissionValue =
+          await models.TransportationStatistics.findOne({
+            where: {
+              label: transportation.label,
+            },
+          });
+
+        const transportationEmission =
+          transportation.fuelUsed * transportEmissionValue.dataValues.CO2value;
+
+        emissionBadgeValues.transportation +=
+          (transportationEmission / emissions.transportation.CO2) *
+          100 *
+          (transportEmissionValue.dataValues.CO2percentile / 100);
+      }
+    }
+    const badgeValue =
+      (emissionBadgeValues.electricity +
+        emissionBadgeValues.heating +
+        emissionBadgeValues.waste +
+        emissionBadgeValues.refrigerants +
+        emissionBadgeValues.transportation) /
+      5;
+
+    switch (true) {
+      case badgeValue < 5:
+        return "A+++";
+      case badgeValue < 10:
+        return "A++";
+      case badgeValue < 15:
+        return "A+";
+      case badgeValue < 25:
+        return "A";
+      case badgeValue < 40:
+        return "B";
+      case badgeValue < 60:
+        return "C";
+      case badgeValue < 80:
+        return "D";
+      case badgeValue < 100:
+        return "E";
+    }
+    return;
+  },
 };

@@ -12,7 +12,6 @@ const calculateWasteMinMax = (data) => {
   let maxValueComposted = -1;
 
   data.forEach((row) => {
-    console.log(row);
     // calculate min value
     if (row.Recycled !== null && row.Recycled < minValueRecycled) {
       minValueRecycled = row.Recycled;
@@ -65,7 +64,6 @@ const calculateWasteGrading = (wasteData, minValue, maxValue) => {
 
   // add multiplied values to an array
   wasteData.forEach((row) => {
-    console.log(row);
     if (row.Recycled !== null) {
       const valueRecycled = row.Recycled;
       numbersListRecycled.push(Number(valueRecycled.toFixed(2)));

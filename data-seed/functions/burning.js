@@ -75,7 +75,7 @@ const convertToMetricUnit = (data) => {
       row.CH4value = row.CH4value * 0.264;
       row.N2Ovalue = row.N2Ovalue * 0.264;
       row.CO2BiogenicValue = row.CO2BiogenicValue * 0.264;
-      row.unit = "litre";
+      row.unit = "litres";
     }
     if (row.unit === "mmBtu/scf") {
       row.CO2value = row.CO2value * 35.3;

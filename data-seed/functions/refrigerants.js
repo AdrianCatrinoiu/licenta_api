@@ -19,7 +19,6 @@ const calculateRefrigerantsGrading = (refrigerantsData, minValue, maxValue) => {
 
   // add multiplied GWP values to an array
   refrigerantsData.forEach((row) => {
-    // console.log(row);
     if (row.GWP !== null) {
       const value = row.GWP;
       numbersList.push(Number(value.toFixed(2)));
@@ -45,7 +44,6 @@ const calculateRefrigerantsGrading = (refrigerantsData, minValue, maxValue) => {
 };
 
 const saveToDatabase = async (refrigerantsData, models) => {
-  // console.log(refrigerantsData);
   await models.RefrigerantsStatistics.bulkCreate(refrigerantsData);
 };
 

@@ -13,7 +13,7 @@ module.exports = (app, models) => {
 
     wasteValues = wasteValues.map((wasteValue) => {
       return {
-        label: wasteValue.dataValues.label,
+        label: wasteValue.dataValues.material,
       };
     });
 
@@ -34,12 +34,7 @@ module.exports = (app, models) => {
         fuelUnit: transportationValue.dataValues.unit,
       };
     });
-    console.log({
-      burningValues: burningValues,
-      wasteValues: wasteValues,
-      refrigerantsValues: refrigerantsValues,
-      transportationValues: transportationValues,
-    });
+
     return res.status(200).send({
       burningValues: burningValues,
       wasteValues: wasteValues,
