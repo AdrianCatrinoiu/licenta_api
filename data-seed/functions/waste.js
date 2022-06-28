@@ -1,62 +1,4 @@
-const calculateWasteMinMax = (data) => {
-  let minValueRecycled = 99999;
-  let maxValueRecycled = -1;
-
-  let minValueLandfilled = 99999;
-  let maxValueLandfilled = -1;
-
-  let minValueCombusted = 99999;
-  let maxValueCombusted = -1;
-
-  let minValueComposted = 99999;
-  let maxValueComposted = -1;
-
-  data.forEach((row) => {
-    // calculate min value
-    if (row.Recycled !== null && row.Recycled < minValueRecycled) {
-      minValueRecycled = row.Recycled;
-    }
-    if (row.Landfilled !== null && row.Landfilled < minValueLandfilled) {
-      minValueLandfilled = row.Landfilled;
-    }
-    if (row.Combusted !== null && row.Combusted < minValueCombusted) {
-      minValueCombusted = row.Combusted;
-    }
-    if (row.Composted !== null && row.Composted < minValueComposted) {
-      minValueComposted = row.Composted;
-    }
-
-    //calculate max value
-    if (row.Recycled !== null && row.Recycled > maxValueRecycled) {
-      maxValueRecycled = row.Recycled;
-    }
-
-    if (row.Landfilled !== null && row.Landfilled > maxValueLandfilled) {
-      maxValueLandfilled = row.Landfilled;
-    }
-
-    if (row.Combusted !== null && row.Combusted > maxValueCombusted) {
-      maxValueCombusted = row.Combusted;
-    }
-
-    if (row.Composted !== null && row.Composted > maxValueComposted) {
-      maxValueComposted = row.Composted;
-    }
-  });
-
-  return {
-    minValueRecycled: minValueRecycled.toFixed(2),
-    maxValueRecycled: maxValueRecycled.toFixed(2),
-    minValueLandfilled: minValueLandfilled.toFixed(2),
-    maxValueLandfilled: maxValueLandfilled.toFixed(2),
-    minValueCombusted: minValueCombusted.toFixed(2),
-    maxValueCombusted: maxValueCombusted.toFixed(2),
-    minValueComposted: minValueComposted.toFixed(2),
-    maxValueComposted: maxValueComposted.toFixed(2),
-  };
-};
-
-const calculateWasteGrading = (wasteData, minValue, maxValue) => {
+const calculateWasteGrading = (wasteData) => {
   let numbersListRecycled = [];
   let numbersListLandfilled = [];
   let numbersListCombusted = [];
@@ -161,14 +103,12 @@ const convertToMetricUnit = (data) => {
 };
 
 const saveToDatabase = async (wasteData, models) => {
-  console.log(wasteData);
   await models.WasteStatistics.bulkCreate(wasteData);
 };
 
 const evalWaste = (wasteData, models) => {
   const convertedData = convertToMetricUnit(wasteData);
-  const minMaxData = calculateWasteMinMax(convertedData);
-  const gradedWasteData = calculateWasteGrading(wasteData, minMaxData);
+  const gradedWasteData = calculateWasteGrading(convertedData);
   saveToDatabase(gradedWasteData, models);
 };
 

@@ -1,22 +1,7 @@
-const calculateBurningMinMax = (burningData) => {
-  let minValue = 99999;
-  let maxValue = -1;
-  burningData.forEach((row) => {
-    if (row.CO2value * row.mmBtu < minValue && row.CO2value !== null) {
-      minValue = row.CO2value * row.mmBtu;
-    }
-
-    if (row.CO2value * row.mmBtu > maxValue && row.CO2value !== null) {
-      maxValue = row.CO2value * row.mmBtu;
-    }
-  });
-  return { minValue: minValue.toFixed(2), maxValue: maxValue.toFixed(2) };
-};
-
-const calculateBurningGrading = (burningData, minValue, maxValue) => {
+const calculateBurningGrading = (burningData) => {
   let numbersList = [];
 
-  // add multiplied CO2 values to an array
+  // adaugam valorile gCO2 multiplicate intr-o lista
   burningData.forEach((row) => {
     if (row.CO2value !== null) {
       const value = row.CO2value * row.mmBtu;
@@ -24,7 +9,7 @@ const calculateBurningGrading = (burningData, minValue, maxValue) => {
     }
   });
 
-  // sort the array of CO2 values
+  // sortam lista de valori gCO2
   const sortedList = numbersList.sort((a, b) => a - b);
   let totalNrs = sortedList.length;
 
@@ -56,7 +41,6 @@ const fillBurningMissingData = (data) => {
 };
 
 const saveToDatabase = async (burningData, models) => {
-  console.log(burningData);
   await models.BurningStatistics.bulkCreate(burningData);
 };
 

@@ -273,7 +273,6 @@ module.exports = (app, models) => {
                 },
               }
             );
-
             await models.FormStepHeating.update(
               {
                 label: data.data.data.label,
@@ -413,76 +412,44 @@ module.exports = (app, models) => {
           });
 
           if (transportation) {
+            console.log(data.data.data.label);
             const transportEmissionValue =
               await models.TransportationStatistics.findOne({
                 where: {
                   label: data.data.data.label,
                 },
               });
-            if (data.data.data.fuelUnit === "litres") {
-              const emissionsAmountCO2 =
-                data.data.data.fuelUsed *
-                transportEmissionValue.dataValues.CO2value;
-              const emissionsAmountCH4 =
-                data.data.data.fuelUsed *
-                transportEmissionValue.dataValues.CH4value;
-              const emissionsAmountN2O =
-                data.data.data.fuelUsed *
-                transportEmissionValue.dataValues.N2Ovalue;
-              await models.FormStepTransportation.update(
-                {
-                  label: data.data.data.label,
-                  vehicleNr: data.data.data.vehicleNr,
-                  fuelUsed: data.data.data.fuelUsed,
-                  fuelUnit: data.data.data.fuelUnit,
-                  emissionsAmountCO2: emissionsAmountCO2,
-                  emissionsAmountCH4: emissionsAmountCH4,
-                  emissionsAmountN2O: emissionsAmountN2O,
-                },
-                { where: { id: transportation.id } }
-              );
-              return res.status(200).send({
-                formId,
-                id: transportation.id,
-                emissions: {
-                  emissionsAmountCO2: emissionsAmountCO2,
-                  emissionsAmountCH4: emissionsAmountCH4,
-                  emissionsAmountN2O: emissionsAmountN2O,
-                },
-              });
-            }
-            if (data.data.data.fuelUnit === "m³") {
-              const emissionsAmountCO2 =
-                data.data.data.fuelUsed *
-                transportEmissionValue.dataValues.CO2value;
-              const emissionsAmountCH4 =
-                data.data.data.fuelUsed *
-                transportEmissionValue.dataValues.CH4value;
-              const emissionsAmountN2O =
-                data.data.data.fuelUsed *
-                transportEmissionValue.dataValues.N2Ovalue;
-              await models.FormStepTransportation.update(
-                {
-                  label: data.data.data.label,
-                  vehicleNr: data.data.data.vehicleNr,
-                  fuelUsed: data.data.data.fuelUsed,
-                  fuelUnit: data.data.data.fuelUnit,
-                  emissionsAmountCO2: emissionsAmountCO2,
-                  emissionsAmountCH4: emissionsAmountCH4,
-                  emissionsAmountN2O: emissionsAmountN2O,
-                },
-                { where: { id: transportation.id } }
-              );
-              return res.status(200).send({
-                formId,
-                id: transportation.id,
-                emissions: {
-                  emissionsAmountCO2: emissionsAmountCO2,
-                  emissionsAmountCH4: emissionsAmountCH4,
-                  emissionsAmountN2O: emissionsAmountN2O,
-                },
-              });
-            }
+            console.log(transportEmissionValue);
+            const emissionsAmountCO2 =
+              data.data.data.fuelUsed *
+              transportEmissionValue.dataValues.CO2value;
+            const emissionsAmountCH4 =
+              data.data.data.fuelUsed *
+              transportEmissionValue.dataValues.CH4value;
+            const emissionsAmountN2O =
+              data.data.data.fuelUsed *
+              transportEmissionValue.dataValues.N2Ovalue;
+            await models.FormStepTransportation.update(
+              {
+                label: data.data.data.label,
+                vehicleNr: data.data.data.vehicleNr,
+                fuelUsed: data.data.data.fuelUsed,
+                fuelUnit: data.data.data.fuelUnit,
+                emissionsAmountCO2: emissionsAmountCO2,
+                emissionsAmountCH4: emissionsAmountCH4,
+                emissionsAmountN2O: emissionsAmountN2O,
+              },
+              { where: { id: transportation.id } }
+            );
+            return res.status(200).send({
+              formId,
+              id: transportation.id,
+              emissions: {
+                emissionsAmountCO2: emissionsAmountCO2,
+                emissionsAmountCH4: emissionsAmountCH4,
+                emissionsAmountN2O: emissionsAmountN2O,
+              },
+            });
           }
           return res.status(404).send("Item not found");
 

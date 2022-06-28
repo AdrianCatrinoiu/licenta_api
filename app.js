@@ -12,6 +12,10 @@ const fileUpload = require("express-fileupload");
 app.use(express.static("db"));
 app.use(cors());
 app.use(express.json());
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {

@@ -265,6 +265,7 @@ module.exports = {
         }
       }
     }
+    console.log("emissionBadgeValues", emissionBadgeValues);
 
     for (const transportation of formData.stepTransportation) {
       if (transportation.label) {
@@ -277,13 +278,16 @@ module.exports = {
 
         const transportationEmission =
           transportation.fuelUsed * transportEmissionValue.dataValues.CO2value;
-
-        emissionBadgeValues.transportation +=
-          (transportationEmission / emissions.transportation.CO2) *
-          100 *
-          (transportEmissionValue.dataValues.CO2percentile / 100);
+        if (transportationEmission) {
+          emissionBadgeValues.transportation +=
+            (transportationEmission / emissions.transportation.CO2) *
+            100 *
+            (transportEmissionValue.dataValues.CO2percentile / 100);
+        }
       }
     }
+    console.log("emissionBadgeValues2", emissionBadgeValues);
+
     const badgeValue =
       (emissionBadgeValues.electricity +
         emissionBadgeValues.heating +
@@ -291,7 +295,7 @@ module.exports = {
         emissionBadgeValues.refrigerants +
         emissionBadgeValues.transportation) /
       5;
-
+    console.log("badgeValue", badgeValue);
     switch (true) {
       case badgeValue < 5:
         return "A+++";

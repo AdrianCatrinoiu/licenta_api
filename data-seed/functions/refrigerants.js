@@ -1,20 +1,4 @@
-const calculateRefrigerantsMinMax = (data) => {
-  let minValue = 99999;
-  let maxValue = -1;
-
-  data.forEach((row) => {
-    if (row.GWP < minValue && row.GWP !== null) {
-      minValue = row.GWP;
-    }
-
-    if (row.GWP > maxValue && row.GWP !== null) {
-      maxValue = row.GWP;
-    }
-  });
-  return { minValue: minValue.toFixed(2), maxValue: maxValue.toFixed(2) };
-};
-
-const calculateRefrigerantsGrading = (refrigerantsData, minValue, maxValue) => {
+const calculateRefrigerantsGrading = (refrigerantsData) => {
   let numbersList = [];
 
   // add multiplied GWP values to an array
@@ -48,13 +32,7 @@ const saveToDatabase = async (refrigerantsData, models) => {
 };
 
 const evalRefrigerants = (refrigerantsData, models) => {
-  const { minValue, maxValue } = calculateRefrigerantsMinMax(refrigerantsData);
-
-  const gradedRefrigerantsData = calculateRefrigerantsGrading(
-    refrigerantsData,
-    minValue,
-    maxValue
-  );
+  const gradedRefrigerantsData = calculateRefrigerantsGrading(refrigerantsData);
 
   saveToDatabase(gradedRefrigerantsData, models);
 };

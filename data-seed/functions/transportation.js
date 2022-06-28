@@ -1,24 +1,4 @@
-const calculateTransportationMinMax = (data) => {
-  let minValue = 99999;
-  let maxValue = -1;
-
-  data.forEach((row) => {
-    if (row.CO2value < minValue && row.CO2value !== null) {
-      minValue = row.CO2value;
-    }
-
-    if (row.CO2value > maxValue && row.CO2value !== null) {
-      maxValue = row.CO2value;
-    }
-  });
-  return { minValue: minValue.toFixed(2), maxValue: maxValue.toFixed(2) };
-};
-
-const calculateTransportationGrading = (
-  transportationData,
-  minValue,
-  maxValue
-) => {
+const calculateTransportationGrading = (transportationData) => {
   let numbersList = [];
 
   // add multiplied CO2value values to an array
@@ -83,7 +63,6 @@ const convertToMetricUnit = (data) => {
 };
 
 const saveToDatabase = async (transportationData, models) => {
-  console.log(transportationData);
   await models.TransportationStatistics.bulkCreate(transportationData);
 };
 
@@ -92,14 +71,8 @@ const evalTransportation = (transportationData, models) => {
   const completeTransportationData =
     fillTransportationMissingData(convertedData);
 
-  const { minValue, maxValue } = calculateTransportationMinMax(
-    completeTransportationData
-  );
-
   const gradedTransportationData = calculateTransportationGrading(
-    completeTransportationData,
-    minValue,
-    maxValue
+    completeTransportationData
   );
 
   saveToDatabase(gradedTransportationData, models);
